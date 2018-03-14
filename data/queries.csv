@@ -2,6 +2,8 @@ query,expected
 siren,5862206588ee38254d3f4e5e
 siret,5862206588ee38254d3f4e5e
 open damir,54de1e8fc751df388646738b
+opendamir,54de1e8fc751df388646738b
+damir,54de1e8fc751df388646738b
 contours départements,536991b0a3a729239d203d13
 emissions polluantes,53ba4c07a3a729219b7bead3
 géofla départements,536995f5a3a729239d20487f
