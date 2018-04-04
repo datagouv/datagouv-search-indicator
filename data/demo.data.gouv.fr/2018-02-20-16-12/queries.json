@@ -1,1 +1,248 @@
-{"total": 14, "found": 13, "avg_rank": 1.3846153846153846, "score": 0, "queries": [{"query": "siren", "expected": "5862206588ee38254d3f4e5e", "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)", "found": true, "total": 63, "rank": 1, "page": 1, "datasets": [{"id": "5862206588ee38254d3f4e5e", "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)"}]}, {"query": "siret", "expected": "5862206588ee38254d3f4e5e", "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)", "found": true, "total": 40, "rank": 1, "page": 1, "datasets": [{"id": "5862206588ee38254d3f4e5e", "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)"}]}, {"query": "open damir", "expected": "54de1e8fc751df388646738b", "title": "Open DAMIR : base complète sur les dépenses d'assurance maladie inter régimes", "found": true, "total": 4, "rank": 1, "page": 1, "datasets": [{"id": "54de1e8fc751df388646738b", "title": "Open DAMIR : base complète sur les dépenses d'assurance maladie inter régimes"}]}, {"query": "contours départements", "expected": "536991b0a3a729239d203d13", "title": "Contours des départements français issus d'OpenStreetMap", "found": true, "total": 374, "rank": 1, "page": 1, "datasets": [{"id": "536991b0a3a729239d203d13", "title": "Contours des départements français issus d'OpenStreetMap"}]}, {"query": "emissions polluantes", "expected": "53ba4c07a3a729219b7bead3", "title": "Emissions de CO2 et de polluants des véhicules commercialisés en France ", "found": true, "total": 13, "rank": 1, "page": 1, "datasets": [{"id": "53ba4c07a3a729219b7bead3", "title": "Emissions de CO2 et de polluants des véhicules commercialisés en France "}]}, {"query": "géofla départements", "expected": "536995f5a3a729239d20487f", "title": "Geofla® - Départements", "found": true, "total": 313, "rank": 2, "page": 1, "datasets": [{"id": "53699233a3a729239d203e69", "title": "Découpage administratif communal français issu d'OpenStreetMap"}, {"id": "536995f5a3a729239d20487f", "title": "Geofla® - Départements"}]}, {"query": "effectifs police municipale", "expected": "5369986ba3a729239d204f55", "title": "Police municipale : Effectifs par commune", "found": true, "total": 1, "rank": 1, "page": 1, "datasets": [{"id": "5369986ba3a729239d204f55", "title": "Police municipale : Effectifs par commune"}]}, {"query": "marchés public bourgogne", "expected": "5a0effeac751df5832ded865", "title": "Données des marchés publics (expérimentation OpenDataLocal) de la région BFC", "found": true, "total": 5, "rank": 4, "page": 1, "datasets": [{"id": "542bf8c388ee386c3fcb3922", "title": "Les zones d'emploi en Bourgogne"}, {"id": "539a7245a3a7293bc272839f", "title": "Subventions 2010 versées aux associations à Dijon (Bourgogne-Côte d'Or-21-F)"}, {"id": "55812b7388ee38294df4b5a1", "title": "les zones d'emploi en Bourgogne"}, {"id": "5a0effeac751df5832ded865", "title": "Données des marchés publics (expérimentation OpenDataLocal) de la région BFC"}]}, {"query": "Liste gares SNCF", "expected": "59593619a3a7291dd09c8238", "title": "Liste des gares", "found": false, "total": 3, "rank": null, "page": 1, "datasets": [{"id": "53699ed0a3a729239d205f91", "title": "Référentiel des équipements d'accessibilité dans les gares et les trains"}, {"id": "53698e41a3a729239d2033fc", "title": "Abris vélos en Gare SNCF en Pays de la Loire"}, {"id": "563dd03cb5950814b0588712", "title": "Caractéristiques des abris vélo Véligo"}]}, {"query": "contours départements français", "expected": "536991b0a3a729239d203d13", "title": "Contours des départements français issus d'OpenStreetMap", "found": true, "total": 35, "rank": 2, "page": 1, "datasets": [{"id": "53699233a3a729239d203e69", "title": "Découpage administratif communal français issu d'OpenStreetMap"}, {"id": "536991b0a3a729239d203d13", "title": "Contours des départements français issus d'OpenStreetMap"}]}, {"query": "loi de finance 2016", "expected": "5625fba688ee3820e912613c", "title": "Projet de loi de finances pour 2016 (PLF 2016)", "found": true, "total": 17, "rank": 1, "page": 1, "datasets": [{"id": "5625fba688ee3820e912613c", "title": "Projet de loi de finances pour 2016 (PLF 2016)"}]}, {"query": "formations pas de calais", "expected": "53699058a3a729239d2039a3", "title": "Centres de formation et d'apprentissage", "found": true, "total": 3, "rank": 1, "page": 1, "datasets": [{"id": "53699058a3a729239d2039a3", "title": "Centres de formation et d'apprentissage"}]}, {"query": "accidents de la circulation", "expected": "536997eaa3a729239d204dfd", "title": "Les accidents de la circulation", "found": true, "total": 18, "rank": 1, "page": 1, "datasets": [{"id": "536997eaa3a729239d204dfd", "title": "Les accidents de la circulation"}]}, {"query": "risque de décès un an après accident", "expected": "5630f53b88ee385064531578", "title": "Les risques de décès un an après un accident vasculaire cérébral", "found": true, "total": 1, "rank": 1, "page": 1, "datasets": [{"id": "5630f53b88ee385064531578", "title": "Les risques de décès un an après un accident vasculaire cérébral"}]}], "date": "2018-02-20T16:12:12"}
+{
+    "avg_rank": 1.3846153846153846,
+    "date": "2018-02-20T16:12:12",
+    "found": 13,
+    "queries": [
+        {
+            "datasets": [
+                {
+                    "id": "5862206588ee38254d3f4e5e",
+                    "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)"
+                }
+            ],
+            "expected": "5862206588ee38254d3f4e5e",
+            "found": true,
+            "page": 1,
+            "query": "siren",
+            "rank": 1,
+            "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)",
+            "total": 63
+        },
+        {
+            "datasets": [
+                {
+                    "id": "5862206588ee38254d3f4e5e",
+                    "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)"
+                }
+            ],
+            "expected": "5862206588ee38254d3f4e5e",
+            "found": true,
+            "page": 1,
+            "query": "siret",
+            "rank": 1,
+            "title": "Base Sirene des entreprises et de leurs établissements (SIREN, SIRET)",
+            "total": 40
+        },
+        {
+            "datasets": [
+                {
+                    "id": "54de1e8fc751df388646738b",
+                    "title": "Open DAMIR : base complète sur les dépenses d'assurance maladie inter régimes"
+                }
+            ],
+            "expected": "54de1e8fc751df388646738b",
+            "found": true,
+            "page": 1,
+            "query": "open damir",
+            "rank": 1,
+            "title": "Open DAMIR : base complète sur les dépenses d'assurance maladie inter régimes",
+            "total": 4
+        },
+        {
+            "datasets": [
+                {
+                    "id": "536991b0a3a729239d203d13",
+                    "title": "Contours des départements français issus d'OpenStreetMap"
+                }
+            ],
+            "expected": "536991b0a3a729239d203d13",
+            "found": true,
+            "page": 1,
+            "query": "contours départements",
+            "rank": 1,
+            "title": "Contours des départements français issus d'OpenStreetMap",
+            "total": 374
+        },
+        {
+            "datasets": [
+                {
+                    "id": "53ba4c07a3a729219b7bead3",
+                    "title": "Emissions de CO2 et de polluants des véhicules commercialisés en France "
+                }
+            ],
+            "expected": "53ba4c07a3a729219b7bead3",
+            "found": true,
+            "page": 1,
+            "query": "emissions polluantes",
+            "rank": 1,
+            "title": "Emissions de CO2 et de polluants des véhicules commercialisés en France ",
+            "total": 13
+        },
+        {
+            "datasets": [
+                {
+                    "id": "53699233a3a729239d203e69",
+                    "title": "Découpage administratif communal français issu d'OpenStreetMap"
+                },
+                {
+                    "id": "536995f5a3a729239d20487f",
+                    "title": "Geofla® - Départements"
+                }
+            ],
+            "expected": "536995f5a3a729239d20487f",
+            "found": true,
+            "page": 1,
+            "query": "géofla départements",
+            "rank": 2,
+            "title": "Geofla® - Départements",
+            "total": 313
+        },
+        {
+            "datasets": [
+                {
+                    "id": "5369986ba3a729239d204f55",
+                    "title": "Police municipale : Effectifs par commune"
+                }
+            ],
+            "expected": "5369986ba3a729239d204f55",
+            "found": true,
+            "page": 1,
+            "query": "effectifs police municipale",
+            "rank": 1,
+            "title": "Police municipale : Effectifs par commune",
+            "total": 1
+        },
+        {
+            "datasets": [
+                {
+                    "id": "542bf8c388ee386c3fcb3922",
+                    "title": "Les zones d'emploi en Bourgogne"
+                },
+                {
+                    "id": "539a7245a3a7293bc272839f",
+                    "title": "Subventions 2010 versées aux associations à Dijon (Bourgogne-Côte d'Or-21-F)"
+                },
+                {
+                    "id": "55812b7388ee38294df4b5a1",
+                    "title": "les zones d'emploi en Bourgogne"
+                },
+                {
+                    "id": "5a0effeac751df5832ded865",
+                    "title": "Données des marchés publics (expérimentation OpenDataLocal) de la région BFC"
+                }
+            ],
+            "expected": "5a0effeac751df5832ded865",
+            "found": true,
+            "page": 1,
+            "query": "marchés public bourgogne",
+            "rank": 4,
+            "title": "Données des marchés publics (expérimentation OpenDataLocal) de la région BFC",
+            "total": 5
+        },
+        {
+            "datasets": [
+                {
+                    "id": "53699ed0a3a729239d205f91",
+                    "title": "Référentiel des équipements d'accessibilité dans les gares et les trains"
+                },
+                {
+                    "id": "53698e41a3a729239d2033fc",
+                    "title": "Abris vélos en Gare SNCF en Pays de la Loire"
+                },
+                {
+                    "id": "563dd03cb5950814b0588712",
+                    "title": "Caractéristiques des abris vélo Véligo"
+                }
+            ],
+            "expected": "59593619a3a7291dd09c8238",
+            "found": false,
+            "page": 1,
+            "query": "Liste gares SNCF",
+            "rank": null,
+            "title": "Liste des gares",
+            "total": 3
+        },
+        {
+            "datasets": [
+                {
+                    "id": "53699233a3a729239d203e69",
+                    "title": "Découpage administratif communal français issu d'OpenStreetMap"
+                },
+                {
+                    "id": "536991b0a3a729239d203d13",
+                    "title": "Contours des départements français issus d'OpenStreetMap"
+                }
+            ],
+            "expected": "536991b0a3a729239d203d13",
+            "found": true,
+            "page": 1,
+            "query": "contours départements français",
+            "rank": 2,
+            "title": "Contours des départements français issus d'OpenStreetMap",
+            "total": 35
+        },
+        {
+            "datasets": [
+                {
+                    "id": "5625fba688ee3820e912613c",
+                    "title": "Projet de loi de finances pour 2016 (PLF 2016)"
+                }
+            ],
+            "expected": "5625fba688ee3820e912613c",
+            "found": true,
+            "page": 1,
+            "query": "loi de finance 2016",
+            "rank": 1,
+            "title": "Projet de loi de finances pour 2016 (PLF 2016)",
+            "total": 17
+        },
+        {
+            "datasets": [
+                {
+                    "id": "53699058a3a729239d2039a3",
+                    "title": "Centres de formation et d'apprentissage"
+                }
+            ],
+            "expected": "53699058a3a729239d2039a3",
+            "found": true,
+            "page": 1,
+            "query": "formations pas de calais",
+            "rank": 1,
+            "title": "Centres de formation et d'apprentissage",
+            "total": 3
+        },
+        {
+            "datasets": [
+                {
+                    "id": "536997eaa3a729239d204dfd",
+                    "title": "Les accidents de la circulation"
+                }
+            ],
+            "expected": "536997eaa3a729239d204dfd",
+            "found": true,
+            "page": 1,
+            "query": "accidents de la circulation",
+            "rank": 1,
+            "title": "Les accidents de la circulation",
+            "total": 18
+        },
+        {
+            "datasets": [
+                {
+                    "id": "5630f53b88ee385064531578",
+                    "title": "Les risques de décès un an après un accident vasculaire cérébral"
+                }
+            ],
+            "expected": "5630f53b88ee385064531578",
+            "found": true,
+            "page": 1,
+            "query": "risque de décès un an après accident",
+            "rank": 1,
+            "title": "Les risques de décès un an après un accident vasculaire cérébral",
+            "total": 1
+        }
+    ],
+    "score": 0,
+    "server": "https://demo.data.gouv.fr",
+    "total": 14
+}
