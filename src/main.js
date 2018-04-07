@@ -10,6 +10,7 @@ import store from './store'
 
 import {mapGetters, mapActions} from 'vuex'
 
+Vue.config.devtools = true
 Vue.use(Vuetify)
 Vue.use(Filters)
 Vue.use(TreeView)

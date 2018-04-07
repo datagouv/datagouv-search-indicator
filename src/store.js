@@ -35,6 +35,13 @@ const getters = {
   getDataset: state => id => state.datasets.find(row => row.id == id),
   dataset: state => state.dataset,
   datasets: state => state.datasets,
+  oembedApi: state => `${state.details.server}/api/1/oembed`,
+  // oembedUrls: state => [
+  //     `${state.domain}/datasets/*/`,
+  //     `${state.domain}/*/datasets/*/`,
+  //     `${state.domain}/reuses/*/`,
+  //     `${state.domain}/*/reuses/*/`,
+  // ],
 };
 
 const mutations = {

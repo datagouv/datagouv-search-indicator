@@ -203,6 +203,7 @@ class Runner:
     def __init__(self, domain, max_pages=3, scheme='https'):
         self.queue = asyncio.Queue()
         self.domain = domain
+        self.scheme = scheme
         self.api = API(domain, scheme)
         self.max_pages = max_pages
         self.now = datetime.now()
@@ -239,6 +240,7 @@ class Runner:
             'score': score(results),
             'queries': results,
             'date': self.now.isoformat(timespec='seconds'),
+            'server': '{scheme}://{domain}'.format(**self.__dict__)
         }
 
         outfile = self.root / 'queries.json'

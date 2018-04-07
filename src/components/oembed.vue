@@ -1,0 +1,70 @@
+<template>
+    <div class="oembed">
+        <div class="oembed-box oembed-loading" v-if="!oembed.type && !error">
+             <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>
+        <div class="oembed-box oembed-error" v-if="error">
+            {{ error }}
+        </div>
+        <div class="oembed-content" v-if="oembed.type" v-html="oembed.html"></div>
+    </div>
+</template>
+
+<script>
+import {mapGetters} from 'vuex'
+
+export default {
+  name: 'o-embed',
+  props: {
+    url: {
+      type: String,
+      required: true
+    }
+  },
+  data () {
+    return {
+      oembed: Object,
+      error: undefined,
+    //   boxStyle: {
+    //     fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
+    //     padding: '15px',
+    //     border: '1px solid grey',
+    //     color: 'grey',
+    //     borderRadius: '3px',
+    //     textAlign: 'center'
+    //   }
+    }
+  },
+  computed: {
+    ...mapGetters(['oembedApi'])
+  },
+  async created() {
+    this.getOembed(this.url)
+  },
+  methods: {
+    async getOembed(url) {
+      this.error = undefined
+      this.oembed = {}
+      if (!url) return;
+      try {
+        const oembedUrl = `${this.oembedApi}?url=${encodeURIComponent(url)}`
+        const response = await fetch(oembedUrl)
+        this.oembed = await response.json()
+      } catch(error) {
+        this.error = error
+      }
+    }
+  },
+  watch: {
+    url(value) {
+      this.getOembed(value)
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.oembed-box {
+
+}
+</style>
