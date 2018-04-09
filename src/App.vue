@@ -1,22 +1,32 @@
 <template>
-  <v-app>
-    <v-toolbar fixed app>
-      <v-toolbar-title v-text="config.title"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-select :items="config.domains" v-model="domain" label="Domain" single-line hide-details bottom></v-select>
-    </v-toolbar>
-    <v-content>
-      <v-container fluid>
-        <breadcrumb></breadcrumb>
-        <v-slide-x-transition mode="out-in">
-          <router-view></router-view>
-        </v-slide-x-transition>
-      </v-container>
-    </v-content>
-    <v-footer app>
-      <span>&copy; 2017</span>
-    </v-footer>
-  </v-app>
+<div>
+  <b-navbar toggleable="md" type="dark" variant="info">
+    <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+
+    <b-navbar-brand href="#">{{ config.title }}</b-navbar-brand>
+
+    <b-collapse is-nav id="nav_collapse">
+
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto">
+
+        <b-nav-item-dropdown :text="domain" right>
+          <b-dropdown-item v-for="dom in config.domains" :key="dom"
+            :to="{name: 'domain', params: {domain: dom}}">
+            {{ dom }}
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
+
+  <main>
+    <b-container fuild>
+      <breadcrumb class="mt-2"></breadcrumb>
+      <router-view></router-view>
+    </b-container>
+  </main>
+</div>
 </template>
 
 <script>
@@ -26,18 +36,7 @@ import Breadcrumb from './components/breadcrumb.vue'
 export default {
   components: {Breadcrumb},
   computed: {
-    domain: {
-      get() {
-        return this.$store.getters.domain
-      },
-      set(value) {
-        this.$router.push({name: 'domain', params: {domain: value}})
-      }
-    },
-    ...mapGetters(['config'])
-  },
-  methods: {
-    ...mapActions(['setDomain'])
+    ...mapGetters(['config', 'domain'])
   }
 }
 </script>

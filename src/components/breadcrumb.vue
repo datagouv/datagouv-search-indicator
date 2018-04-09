@@ -1,16 +1,14 @@
 <template>
-<v-breadcrumbs>
-  <v-icon slot="divider">forward</v-icon>
-  <v-breadcrumbs-item v-for="route in $route.matched.filter(r => r.meta.breadcrumb)"
-      :key="route.path" :to="route" exact>
-    {{ label(route) }}
-  </v-breadcrumbs-item>
-</v-breadcrumbs>
+<b-breadcrumb :items="items" />
 </template>
 
 <script>
 export default {
   computed: {
+    items() {
+      const length = this.routes.length
+      return this.routes.map((route, i) => this.item(route, i + 1 == length))
+    },
     routes() {
       return this.$route.matched.filter(r => r.meta.breadcrumb)
     }
@@ -24,8 +22,11 @@ export default {
       }
     },
     to(route) {
-      return {name: this.route.name, params: this.route.params}
+      return {name: route.name || route.meta.default, params: route.params}
     },
+    item(route, active) {
+      return {text: this.label(route), to: this.to(route), active}
+    }
   }
 }
 </script>

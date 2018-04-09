@@ -1,0 +1,7 @@
+tr.clickable {
+    cursor: pointer;
+}
+
+th.f50, td.f50 {
+    width: 50px;
+}

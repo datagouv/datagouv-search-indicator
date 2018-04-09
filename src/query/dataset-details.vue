@@ -1,28 +1,33 @@
 <template>
-<v-layout v-if="dataset" column>
-  <v-flex class="ma-3" xs12 md10 offset-md1 lg8 offset-lg2>
+<b-row  v-if="dataset">
+  <b-col cols="12" class="mb-3">
     <o-embed :url="dataset.page"></o-embed>
-  </v-flex>
-  <v-flex class="pa-1 blue lighten-5">
+  </b-col>
+  <b-col cols="12">
     <tree-view :data="dataset" :options="treeViewOptions"></tree-view>
-  </v-flex>
-</v-layout>
-<v-layout v-else>
-  <v-progress-circular indeterminate color="primary"></v-progress-circular>
-</v-layout>
+  </b-col>
+</b-row>
+<b-row v-else>
+  <b-col cols="12">
+    <p class="text-center">
+      <font-awesome-icon icon="spinner" pulse/>
+    </p>
+  </b-col>
+</b-row>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex"
 import OEmbed from '../components/oembed.vue'
 import TreeView from '../components/treeview.vue'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'dataset-details',
   props: {
     datasetId: String,
   },
-  components: {OEmbed, TreeView},
+  components: {FontAwesomeIcon, OEmbed, TreeView},
   computed: {
     ...mapGetters(['dataset'])
   },

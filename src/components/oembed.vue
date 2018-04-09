@@ -1,20 +1,22 @@
 <template>
-    <div class="oembed">
-        <div class="oembed-box oembed-loading" v-if="!oembed.type && !error">
-             <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </div>
-        <div class="oembed-box oembed-error" v-if="error">
-            {{ error }}
-        </div>
-        <div class="oembed-content" v-if="oembed.type" v-html="oembed.html"></div>
+  <div class="oembed">
+    <div class="oembed-box oembed-loading" v-if="!oembed.type && !error">
+      <font-awesome-icon icon="spinner" pulse/>
     </div>
+    <div class="oembed-box oembed-error" v-if="error">
+      {{ error }}
+    </div>
+    <div class="oembed-content" v-if="oembed.type" v-html="oembed.html"></div>
+  </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'o-embed',
+  components: {FontAwesomeIcon},
   props: {
     url: {
       type: String,
@@ -25,14 +27,6 @@ export default {
     return {
       oembed: Object,
       error: undefined,
-    //   boxStyle: {
-    //     fontFamily: '-apple-system, system-ui, Roboto, sans-serif',
-    //     padding: '15px',
-    //     border: '1px solid grey',
-    //     color: 'grey',
-    //     borderRadius: '3px',
-    //     textAlign: 'center'
-    //   }
     }
   },
   computed: {
@@ -63,8 +57,11 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped>
 .oembed-box {
-
+  padding: 15px;
+  border: 1px solid lightgrey;
+  border-radius: 0.2em;
+  text-align: center;
 }
 </style>
