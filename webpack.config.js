@@ -2,6 +2,8 @@
 const path = require('path')
 const webpack = require('webpack')
 
+const PATH_PREFIX = process.env.PATH_PREFIX || '';
+
 const css_loaders = [
   {loader: 'style-loader', options: {sourceMap: true}},
   {loader: 'css-loader', options: {sourceMap: true}},
@@ -14,7 +16,7 @@ module.exports = function(env, argv) {
     entry: ['@babel/polyfill', 'whatwg-fetch', './src/main.js'],
     output: {
       path: path.resolve(__dirname, './dist'),
-      publicPath: './dist/',
+      publicPath: `${PATH_PREFIX}/dist/`,
       filename: 'build.js'
     },
     resolve: {
