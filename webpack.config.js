@@ -14,7 +14,7 @@ module.exports = function(env, argv) {
     entry: ['@babel/polyfill', 'whatwg-fetch', './src/main.js'],
     output: {
       path: path.resolve(__dirname, './dist'),
-      publicPath: '/dist/',
+      publicPath: './dist/',
       filename: 'build.js'
     },
     resolve: {
