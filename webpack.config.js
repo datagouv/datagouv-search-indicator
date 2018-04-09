@@ -63,19 +63,5 @@ module.exports = function(env, argv) {
     ]
   }
 
-  if (isProd) {
-    config.plugins.push(
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true,
-        compress: {
-          warnings: false
-        }
-      }),
-      new webpack.LoaderOptionsPlugin({
-        minimize: true
-      })
-    )
-  }
-
   return config
 }
