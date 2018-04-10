@@ -178,11 +178,11 @@ class API:
         return result.json()
 
     async def get_dataset(self, id):
-        return await self.get('datasets/{0}'.format(id))
+        return await self.get('datasets/{0}/'.format(id))
 
     async def search(self, query, page=1):
         params = {'q': query, 'page': page, 'page_size': PAGE_SIZE}
-        return await self.get('datasets', params=params)
+        return await self.get('datasets/', params=params)
 
 
 class QueryResult:

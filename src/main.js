@@ -14,9 +14,9 @@ import store from './store'
 import {mapGetters, mapActions} from 'vuex'
 
 import fontawesome from '@fortawesome/fontawesome'
-import { faSpinner, faStar } from '@fortawesome/fontawesome-free-solid'
+import { faSpinner, faStar, faCheck, faTimes } from '@fortawesome/fontawesome-free-solid'
 
-fontawesome.library.add(faSpinner, faStar)
+fontawesome.library.add(faSpinner, faStar, faCheck, faTimes)
 
 Vue.config.devtools = true
 Vue.use(BootstrapVue);
