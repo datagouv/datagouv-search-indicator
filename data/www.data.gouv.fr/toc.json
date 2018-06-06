@@ -34,5 +34,14 @@
         "found": 33,
         "score": 0,
         "total": 37
+    },
+    {
+        "avg_rank": 3.0,
+        "date": "2018-06-06T18:07:40",
+        "dirname": "2018-06-06-18-07",
+        "file": "2018-06-06-18-07/queries.json",
+        "found": 34,
+        "score": 0,
+        "total": 38
     }
 ]
