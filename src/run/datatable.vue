@@ -18,21 +18,24 @@ export default {
   data() {
     return {
       fields: [
-        { label: 'Query', key: 'query', sortable: true},
+        { label: 'Query', key: 'query', sortable: true, class: 'align-middle' },
         { label: 'Expected', key: 'title', sortable: true },
-        { label: 'Found', key: 'found', sortable: true },
-        { label: 'Rank', key: 'rank', sortable: true },
-        { label: 'Page', key: 'page', sortable: true },
-        { label: 'Total', key: 'total', sortable: true },
+        { label: 'Found', key: 'found', sortable: true, class: 'align-middle text-center' },
+        { label: 'Rank', key: 'rank', sortable: true, class: 'align-middle text-right' },
+        { label: 'Page', key: 'page', sortable: true, class: 'align-middle text-right' },
+        { label: 'Total', key: 'total', sortable: true, class: 'align-middle text-right' },
       ],
     }
   },
   computed: {
     ...mapGetters(['toc', 'domain', 'details']),
     items() {
-      return this.details.queries.map(query => {
-        query._rowVariant = query.found ? 'success' : 'danger'
-        return query
+        return this.details.queries.map(query => {
+            query._cellVariants = {
+                rank: (query.found && query.rank <= 5) ? 'success': 'danger',
+                found: query.found ? 'success' : 'danger'
+            }
+            return query
       })
     }
   },
