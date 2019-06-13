@@ -237,6 +237,7 @@ class Runner:
             'total': len(results),
             'found': count_found(results),
             'avg_rank': average_rank(results),
+            'below': below(results),
             'score': score(results),
             'queries': results,
             'date': self.now.isoformat(timespec='seconds'),
@@ -302,9 +303,12 @@ class Runner:
                                    total=result['total'])
             page += 1
 
-
 def count_found(results):
     return sum(1 for r in results if r['found'])
+
+
+def below(results):
+    return len([1 for r in results if r['found'] and r['rank'] >= 3])
 
 
 def average_rank(results):
@@ -333,6 +337,7 @@ def toc(ctx, domain=DEFAULT_DOMAIN):
             'date': data['date'],
             'total': data['total'],
             'found': data['found'],
+            'below': data['below'] if 'below' in data else 0,
             'avg_rank': data['avg_rank'],
             'score': data['score'],
         })
