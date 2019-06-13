@@ -32,7 +32,7 @@ export default {
     items() {
         return this.details.queries.map(query => {
             query._cellVariants = {
-                rank: (query.found && query.rank <= 5) ? 'success': 'danger',
+                rank: this.rankClass(query.rank),
                 found: query.found ? 'success' : 'danger'
             }
             return query
@@ -49,6 +49,18 @@ export default {
           query: item.query
         }
       })
+    },
+    rankClass(rank){
+
+        var cl = ''
+
+        if (rank > 0 && rank <= 3) {
+            cl = 'success'
+        } else if (rank) {
+            cl = 'warning'
+        }
+
+        return cl
     }
   }
 }
