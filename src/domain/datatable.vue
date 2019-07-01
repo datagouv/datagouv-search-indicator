@@ -17,7 +17,7 @@
 
 <script>
 import {format, parse} from 'date-fns'
-import {mapGetters} from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   data() {
@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['toc', 'domain'])
+    ...mapState(['toc', 'domain'])
   },
   methods: {
     display(item) {

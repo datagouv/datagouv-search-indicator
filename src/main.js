@@ -13,15 +13,18 @@ import store from './store'
 
 import {mapGetters, mapActions} from 'vuex'
 
-import fontawesome from '@fortawesome/fontawesome'
-import { faSpinner, faStar, faCheck, faTimes } from '@fortawesome/fontawesome-free-solid'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCheck, faSearch, faSpinner, faStar, faTimes } from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
-fontawesome.library.add(faSpinner, faStar, faCheck, faTimes)
+library.add(faCheck, faSearch, faSpinner, faStar, faTimes)
+
 
 Vue.config.devtools = true
 Vue.use(BootstrapVue);
 Vue.use(Filters)
 Vue.use(TreeView)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 new Vue({
   el: '#app',

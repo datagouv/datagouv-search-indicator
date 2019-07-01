@@ -12,11 +12,9 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'o-embed',
-  components: {FontAwesomeIcon},
   props: {
     url: {
       type: String,

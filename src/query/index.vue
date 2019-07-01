@@ -41,15 +41,14 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import { mapState } from "vuex"
 import OEmbed from '../components/oembed.vue'
 import DatasetDetails from './dataset-details.vue'
 
 export default {
-  components: {OEmbed, DatasetDetails, FontAwesomeIcon},
+  components: {OEmbed, DatasetDetails},
   computed: {
-    ...mapGetters(['query', 'details']),
+    ...mapState(['query', 'details']),
     items() {
       return this.query.datasets.map(dataset => {
         dataset._showDetails = this.toggled === dataset.id

@@ -23,19 +23,10 @@ const state = {
 }
 
 const getters = {
-  loading: state => state.loading,
-  config: state => state.config,
-  domain: state => state.domain,
-  toc: state => state.toc,
-  run: state => state.run,
-  details: state => state.details,
-  query: state => state.query,
-  currentDate: state => new Date(state.run.date).toLocaleDateString(),
-  currentQuery: state => state.query.query,
+  currentDate: state => state.run ? new Date(state.run.date).toLocaleDateString() : undefined,
+  currentQuery: state => state.query ? state.query.query : undefined,
   getDataset: state => id => state.datasets.find(row => row.id == id),
-  dataset: state => state.dataset,
-  datasets: state => state.datasets,
-  oembedApi: state => `${state.details.server}/api/1/oembed`,
+  oembedApi: state => state.details ? `${state.details.server}/api/1/oembed` : undefined,
   // oembedUrls: state => [
   //     `${state.domain}/datasets/*/`,
   //     `${state.domain}/*/datasets/*/`,
@@ -93,26 +84,26 @@ const actions = {
         commit('domain', domain)
         await dispatch('getToc')
     },
-    async getToc({ commit, getters }) {
+    async getToc({ commit, state }) {
         try {
             commit('loading', true)
-            const response = await getData(`${getters.domain}/toc.json`)
+            const response = await getData(`${state.domain}/toc.json`)
             commit('toc', response)
             commit('loading', false)
         } catch (error) {
             console.error(error)
         }
     },
-    async setRun({ commit, dispatch, getters }, date) {
-        const run = getters.toc.find(row => row.date === date)
+    async setRun({ commit, dispatch, state }, date) {
+        const run = state.toc.find(row => row.date === date)
         commit('run', run)
         await dispatch('getDetails')
     },
-    async getDetails({ commit, getters }) {
+    async getDetails({ commit, state }) {
         try {
             commit('loading', true)
             const response = await getData(
-                `${getters.domain}/${getters.run.file}`
+                `${state.domain}/${state.run.file}`
             )
             commit('details', response)
             commit('loading', false)
@@ -120,22 +111,22 @@ const actions = {
             console.error(error)
         }
     },
-    async setQuery({ commit, getters }, query) {
+    async setQuery({ commit, state }, query) {
         try {
-            const q = getters.details.queries.find(row => row.query == query)
+            const q = state.details.queries.find(row => row.query == query)
             commit('query', q)
             commit('dataset', undefined);
         } catch (error) {
             console.error(error)
         }
     },
-    async getDataset({ commit, getters }, id) {
+    async getDataset({ commit, getters, state }, id) {
         try {
             if (!getters.getDataset(id)) {
                 commit('loading', true)
                 const dataset = await getData(
-                    `${getters.domain}/${
-                        getters.run.dirname
+                    `${state.domain}/${
+                        state.run.dirname
                     }/datasets/${id}.json`
                 )
                 commit('addDataset', dataset)

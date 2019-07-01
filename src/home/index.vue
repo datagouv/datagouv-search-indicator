@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['config'])
+    ...mapState(['config'])
   }
 }
 </script>

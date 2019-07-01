@@ -1,6 +1,7 @@
 /* global module,process */
 const path = require('path')
 const webpack = require('webpack')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const PATH_PREFIX = process.env.PATH_PREFIX || '';
 
@@ -13,7 +14,12 @@ const css_loaders = [
 module.exports = function(env, argv) {
   const isProd = argv.mode === 'production'
   const config = {
-    entry: ['@babel/polyfill', 'whatwg-fetch', './src/main.js'],
+    entry: [
+      'core-js/stable',
+      'regenerator-runtime/runtime',
+      'whatwg-fetch',
+      './src/main.js'
+    ],
     output: {
       path: path.resolve(__dirname, './dist'),
       publicPath: `${PATH_PREFIX}/dist/`,
@@ -28,11 +34,7 @@ module.exports = function(env, argv) {
     },
     module: {
       rules: [
-        {test: /\.vue$/, loader: 'vue-loader', options: {
-            loaders: {
-                css: css_loaders,
-            }
-        }},
+        {test: /\.vue$/, loader: 'vue-loader'},
         {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
         {test: /\.css$/, use: css_loaders},
         {
@@ -47,10 +49,15 @@ module.exports = function(env, argv) {
     devServer: {
       historyApiFallback: true,
       contentBase: path.resolve(__dirname),
-      noInfo: true,
+      // noInfo: true,
       overlay: {
           warnings: true,
           errors: true
+      },
+      disableHostCheck: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
       },
       hot: true
     },
@@ -61,7 +68,8 @@ module.exports = function(env, argv) {
     plugins: [
       new webpack.DefinePlugin({
         PRODUCTION: JSON.stringify(isProd)
-      })
+      }),
+      new VueLoaderPlugin(),
     ]
   }
 

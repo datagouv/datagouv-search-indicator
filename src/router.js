@@ -16,7 +16,7 @@ const router = new VueRouter({
     {
       path: '/:domain',
       component: () => import('./domain/index.vue'),
-      meta: { breadcrumb: s => s.getters.domain, default: 'domain' },
+      meta: { breadcrumb: s => s.state.domain, default: 'domain' },
       beforeEnter(to, from, next) {
         store.dispatch('setDomain', to.params.domain).then(next);
       },
@@ -31,6 +31,7 @@ const router = new VueRouter({
           component: () => import('./run/index.vue'),
           meta: { breadcrumb: s => s.getters.currentDate, default: 'run' },
           beforeEnter(to, from, next) {
+            console.log('domain/:date beforeEnter', to, from, next)
             store.dispatch('setRun', to.params.date).then(next);
           },
           children: [
@@ -45,6 +46,7 @@ const router = new VueRouter({
               component: () => import('./query/index.vue'),
               meta: { breadcrumb: s => s.getters.currentQuery },
               beforeEnter(to, from, next) {
+                console.log('domain/:date/:query beforeEnter', to, from, next)
                 store.dispatch('setQuery', to.params.query).then(next);
               }
             }

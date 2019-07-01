@@ -10,11 +10,10 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import {mapState} from 'vuex'
 
 export default {
-  components: {FontAwesomeIcon},
+  name: 'run-datatable',
   data() {
     return {
       fields: [
@@ -28,7 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['toc', 'domain', 'details']),
+    ...mapState(['toc', 'domain', 'details']),
     items() {
         return this.details.queries.map(query => {
             query._cellVariants = {

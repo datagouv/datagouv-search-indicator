@@ -30,13 +30,14 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import Breadcrumb from './components/breadcrumb.vue'
 
 export default {
+  name: 'app',
   components: {Breadcrumb},
   computed: {
-    ...mapGetters(['config', 'domain'])
+    ...mapState(['config', 'domain'])
   }
 }
 </script>

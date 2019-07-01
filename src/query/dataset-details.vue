@@ -17,19 +17,18 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex"
+import { mapActions, mapState } from "vuex"
 import OEmbed from '../components/oembed.vue'
 import TreeView from '../components/treeview.vue'
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 export default {
   name: 'dataset-details',
   props: {
     datasetId: String,
   },
-  components: {FontAwesomeIcon, OEmbed, TreeView},
+  components: {OEmbed, TreeView},
   computed: {
-    ...mapGetters(['dataset'])
+    ...mapState(['dataset'])
   },
   data() {
     return {

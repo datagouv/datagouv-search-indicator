@@ -5,3 +5,7 @@ tr.clickable {
 th.f50, td.f50 {
     width: 50px;
 }
+
+th.f85, td.f85 {
+  width: 85px;
+}
