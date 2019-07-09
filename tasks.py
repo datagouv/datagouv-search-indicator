@@ -17,13 +17,11 @@ The expectected input file format is the following (column names matters):
 
 '''
 import asyncio
-import concurrent.futures
 import csv
-import functools
 import itertools
+import http3
 import json
 import os
-import requests
 import sys
 
 from datetime import datetime
@@ -35,6 +33,7 @@ from progress.bar import ChargingBar
 DEFAULT_DOMAIN = 'www.data.gouv.fr'
 BASE_URL = 'https://www.data.gouv.fr/api/1/'
 PAGE_SIZE = 20
+TIMEOUT = 10
 
 
 def color(code):
@@ -161,20 +160,19 @@ class Spinner:
 
 
 class API:
-    def __init__(self, domain, scheme='http'):
+    def __init__(self, domain, scheme='http', timeout=TIMEOUT):
         self.domain = domain
         self.scheme = scheme
-        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
+        self.timeout = timeout
+        self.http = http3.AsyncClient()
 
-    @property
-    def base_url(self):
-        return '{scheme}://{domain}/api/1/'.format(**self.__dict__)
+    def url_for(self, path):
+        return f'{self.scheme}://{self.domain}/api/1/{path}'
 
-    async def get(self, path_or_url, **kwargs):
-        url = '{0}{1}'.format(self.base_url, path_or_url)
-        loop = asyncio.get_event_loop()
-        call = functools.partial(requests.get, url, **kwargs)
-        result = await loop.run_in_executor(self.executor, call)
+    async def get(self, path, **kwargs):
+        url = self.url_for(path)
+        timeout = kwargs.pop('timeout', self.timeout)
+        result = await self.http.get(url, timeout=timeout, **kwargs)
         return result.json()
 
     async def get_dataset(self, id):
@@ -200,11 +198,11 @@ class QueryResult:
 
 
 class Runner:
-    def __init__(self, domain, max_pages=3, scheme='https'):
+    def __init__(self, domain, max_pages=3, scheme='https', timeout=TIMEOUT):
         self.queue = asyncio.Queue()
         self.domain = domain
         self.scheme = scheme
-        self.api = API(domain, scheme)
+        self.api = API(domain, scheme, timeout)
         self.max_pages = max_pages
         self.now = datetime.now()
 
@@ -366,11 +364,11 @@ def event(ctx, label, domain=DEFAULT_DOMAIN):
 
 
 @task
-def run(ctx, domain=DEFAULT_DOMAIN, max_pages=3, scheme='https'):
+def run(ctx, domain=DEFAULT_DOMAIN, max_pages=3, scheme='https', timeout=TIMEOUT):
     '''Run benchmarch on a given domain'''
     header('Running benchmark on {0}', domain)
     loop = asyncio.get_event_loop()
-    runner = Runner(domain, max_pages, scheme)
+    runner = Runner(domain, max_pages, scheme, timeout)
     results = loop.run_until_complete(runner.process())
     loop.close()
     success('Benchmark run {0} queries on {1}', len(results), domain)
