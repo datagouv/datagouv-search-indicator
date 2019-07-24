@@ -17,12 +17,12 @@ export default {
   data() {
     return {
       fields: [
-        { label: 'Query', key: 'query', sortable: true, class: 'align-middle' },
+        { label: 'Query', key: 'query', sortable: true },
         { label: 'Expected', key: 'title', sortable: true },
-        { label: 'Found', key: 'found', sortable: true, class: 'align-middle text-center' },
-        { label: 'Rank', key: 'rank', sortable: true, class: 'align-middle text-right' },
-        { label: 'Page', key: 'page', sortable: true, class: 'align-middle text-right' },
-        { label: 'Total', key: 'total', sortable: true, class: 'align-middle text-right' },
+        { label: 'Found', key: 'found', sortable: true, class: 'text-center f85'},
+        { label: 'Rank', key: 'rank', sortable: true, class: 'text-right f85' },
+        { label: 'Page', key: 'page', sortable: true, class: 'text-right f85' },
+        { label: 'Total', key: 'total', sortable: true, class: 'text-right f85' },
       ],
     }
   },

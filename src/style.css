@@ -9,3 +9,15 @@ th.f50, td.f50 {
 th.f85, td.f85 {
   width: 85px;
 }
+
+.table thead th {
+  vertical-align: middle;
+}
+
+.table thead th, .table th, .table td {
+  vertical-align: middle;
+}
+
+th[aria-sort] {
+  padding-right: 0.5rem;
+}
