@@ -19,7 +19,7 @@ The expectected input file format is the following (column names matters):
 import asyncio
 import csv
 import itertools
-import http3
+import httpx
 import json
 import os
 import sys
@@ -164,7 +164,11 @@ class API:
         self.domain = domain
         self.scheme = scheme
         self.timeout = timeout
-        self.http = http3.AsyncClient()
+        self.http = httpx.AsyncClient()
+
+        # Domains
+        self.dataset = DatasetAPI(self)
+        self.org = OrganizationAPI(self)
 
     def url_for(self, path):
         return f'{self.scheme}://{self.domain}/api/1/{path}'
@@ -175,12 +179,28 @@ class API:
         result = await self.http.get(url, timeout=timeout, **kwargs)
         return result.json()
 
-    async def get_dataset(self, id):
-        return await self.get('datasets/{0}/'.format(id))
+
+class DomainAPI:
+    def __init__(self, api):
+        self.api = api
+
+
+class DatasetAPI(DomainAPI):
+    async def get(self, id):
+        return await self.api.get('datasets/{0}/'.format(id))
 
     async def search(self, query, page=1):
         params = {'q': query, 'page': page, 'page_size': PAGE_SIZE}
-        return await self.get('datasets/', params=params)
+        return await self.api.get('datasets/', params=params)
+
+
+class OrganizationAPI(DomainAPI):
+    async def get(self, id):
+        return await self.api.get('organizations/{0}/'.format(id))
+
+    async def search(self, query, page=1):
+        params = {'q': query, 'page': page, 'page_size': PAGE_SIZE}
+        return await self.api.get('organizations/', params=params)
 
 
 class QueryResult:
@@ -254,7 +274,7 @@ class Runner:
             with dataset_file.open(encoding='utf-8') as jsonfile:
                 dataset = json.load(jsonfile)
         else:
-            dataset = await self.api.get_dataset(id)
+            dataset = await self.api.dataset.get(id)
             with dataset_file.open('w', encoding='utf-8') as jsonfile:
                 json.dump(dataset, jsonfile, ensure_ascii=False)
 
@@ -279,7 +299,7 @@ class Runner:
         page = 1
         rank = 0
         while page <= self.max_pages:
-            result = await self.api.search(query, page=page)
+            result = await self.api.dataset.search(query, page=page)
             if 'data' not in result:
                 return QueryResult(error='Bad response format: {}'.format(result),
                                    page=page,
@@ -300,6 +320,7 @@ class Runner:
                                    datasets=datasets,
                                    total=result['total'])
             page += 1
+
 
 def count_found(results):
     return sum(1 for r in results if r['found'])
