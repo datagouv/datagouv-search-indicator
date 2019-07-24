@@ -23,6 +23,8 @@ import httpx
 import json
 import os
 import sys
+import logging
+import warnings
 
 from datetime import datetime
 from glob import glob
@@ -34,6 +36,7 @@ DEFAULT_DOMAIN = 'www.data.gouv.fr'
 BASE_URL = 'https://www.data.gouv.fr/api/1/'
 PAGE_SIZE = 20
 TIMEOUT = 10
+CONCURRENCY = 20
 
 
 def color(code):
@@ -82,7 +85,7 @@ class CompoundBar(ChargingBar):
     def __init__(self, *args, **kwargs):
         self.lines = 0
         self.max = 1
-        # self.index =
+        self.index = 0
         self.tasks = []
         super().__init__(*args, **kwargs)
 
@@ -135,6 +138,7 @@ class Spinner:
         self.label = label
         self.done = False
         self.result = None
+        self.error = None
         self.frames = itertools.cycle(self.FRAMES)
         self.spin()
 
@@ -150,11 +154,18 @@ class Spinner:
         return self
 
     def __str__(self):
+        if self.error:
+            return '{0.picto} {0.label} ({0.error})'.format(self)
         return '{0.picto} {0.label}'.format(self)
 
     def on_done(self, future):
-        self.result = future.result()
-        self.ok = self.result['found']
+        try:
+            self.result = future.result()
+        except Exception as e:
+            self.ok = False
+            self.error = str(e)
+        else:
+            self.ok = self.result['found']
         self.done = True
         self.spin()
 
@@ -218,13 +229,16 @@ class QueryResult:
 
 
 class Runner:
-    def __init__(self, domain, max_pages=3, scheme='https', timeout=TIMEOUT):
+    def __init__(self, domain, max_pages=3, scheme='https', timeout=TIMEOUT, concurrency=CONCURRENCY):
         self.queue = asyncio.Queue()
         self.domain = domain
         self.scheme = scheme
         self.api = API(domain, scheme, timeout)
         self.max_pages = max_pages
         self.now = datetime.now()
+
+        # Manage concurrency with an async Semaphore
+        self.limiter = asyncio.Semaphore(concurrency)
 
     @property
     def timestamp(self):
@@ -281,8 +295,9 @@ class Runner:
         return dataset
 
     async def process_query(self, query, expected):
-        result = await self.rank_query(query, expected)
-        dataset = await self.get_dataset(expected)
+        async with self.limiter:
+            result = await self.rank_query(query, expected)
+            dataset = await self.get_dataset(expected)
         return {
             'query': query,
             'expected': expected,
@@ -323,7 +338,7 @@ class Runner:
 
 
 def count_found(results):
-    return sum(1 for r in results if r['found'])
+    return sum(1 for r in results if r and r['found'])
 
 
 def below(results):
@@ -385,11 +400,16 @@ def event(ctx, label, domain=DEFAULT_DOMAIN):
 
 
 @task
-def run(ctx, domain=DEFAULT_DOMAIN, max_pages=3, scheme='https', timeout=TIMEOUT):
+def run(ctx, domain=DEFAULT_DOMAIN, max_pages=3, scheme='https', timeout=TIMEOUT,
+        concurrency=CONCURRENCY, verbose=False):
     '''Run benchmarch on a given domain'''
     header('Running benchmark on {0}', domain)
     loop = asyncio.get_event_loop()
-    runner = Runner(domain, max_pages, scheme, timeout)
+    # Report all mistakes managing asynchronous resources.
+    if verbose:
+        loop.set_debug(True)
+        warnings.simplefilter('always', ResourceWarning)
+    runner = Runner(domain, max_pages, scheme, timeout, concurrency)
     results = loop.run_until_complete(runner.process())
     loop.close()
     success('Benchmark run {0} queries on {1}', len(results), domain)
