@@ -41,7 +41,11 @@ export default {
       try {
         const oembedUrl = `${this.oembedApi}?url=${encodeURIComponent(url)}`
         const response = await fetch(oembedUrl)
-        this.oembed = await response.json()
+        if (response.ok) {
+          this.oembed = await response.json()
+        } else {
+          this.error = response.statusText
+        }
       } catch(error) {
         this.error = error
       }
@@ -61,5 +65,10 @@ export default {
   border: 1px solid lightgrey;
   border-radius: 0.2em;
   text-align: center;
+}
+
+.oembed-error {
+  border: 2px solid red;
+  background-color: #f5c6cb;
 }
 </style>
