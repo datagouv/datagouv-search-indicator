@@ -290,8 +290,8 @@ class Runner:
             try:
                 dataset = await self.get_dataset(expected)
             except httpx.exceptions.HttpError as e:
-                dataset = {'title': 'Dataset({0}) does not exists'.format(expected)}
-                result = QueryResult(error='Unable to fetch dataset: {0}'.format(e),
+                dataset = {'title': 'Dataset({0}) injoignable'.format(expected)}
+                result = QueryResult(error='Impossible de récupérer le jeu de données:\n{0}'.format(e),
                                      found=False)
             else:
                 result = await self.rank_query(query, expected)
@@ -315,7 +315,7 @@ class Runner:
         while page <= self.max_pages:
             result = await self.api.dataset.search(query, page=page)
             if 'data' not in result:
-                return QueryResult(error='Bad response format: {}'.format(result),
+                return QueryResult(error='Mauvais format de réponse:\n{}'.format(result),
                                    page=page,
                                    datasets=datasets)
             for rank, dataset in enumerate(result['data'], rank + 1):

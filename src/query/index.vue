@@ -15,7 +15,7 @@
   <b-row align-h="center" class="mb-3" v-if="query.error">
     <b-col cols="12">
       <b-alert variant="danger" show>
-        <h4 class="alert-heading">Error during query processing</h4>
+        <h4 class="alert-heading">Erreur durant le traitement de la requête</h4>
         {{ query.error }}
       </b-alert>
     </b-col>
