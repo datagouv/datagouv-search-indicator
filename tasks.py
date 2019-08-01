@@ -37,6 +37,7 @@ BASE_URL = 'https://www.data.gouv.fr/api/1/'
 PAGE_SIZE = 20
 TIMEOUT = 10
 CONCURRENCY = 20
+EXPECTED_RANK = 3
 
 
 def color(code):
@@ -163,7 +164,7 @@ class Spinner:
             self.result = future.result()
         except Exception as e:
             self.ok = False
-            self.error = str(e)
+            self.error = (str(e) or str(e.__class__.__name__)).split('\n')[0]
         else:
             self.ok = self.result['found']
         self.done = True
@@ -188,6 +189,7 @@ class API:
         url = self.url_for(path)
         timeout = kwargs.pop('timeout', self.timeout)
         result = await self.http.get(url, timeout=timeout, **kwargs)
+        result.raise_for_status()
         return result.json()
 
 
@@ -298,6 +300,7 @@ class Runner:
         async with self.limiter:
             result = await self.rank_query(query, expected)
             dataset = await self.get_dataset(expected)
+
         return {
             'query': query,
             'expected': expected,
@@ -342,11 +345,11 @@ def count_found(results):
 
 
 def below(results):
-    return len([1 for r in results if r['found'] and r['rank'] >= 3])
+    return len([1 for r in results if r and r['found'] and r['rank'] >= EXPECTED_RANK])
 
 
 def average_rank(results):
-    ranks = [r['rank'] for r in results if r['found']]
+    ranks = [r['rank'] for r in results if r and r['found']]
     return sum(ranks) / float(len(ranks))
 
 
