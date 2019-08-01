@@ -1,10 +1,15 @@
 [
     {
         "avg_rank": 1.0,
+        "below": 0,
         "date": "2018-02-27T01:00:29",
         "dirname": "2018-02-27-01-00",
         "file": "2018-02-27-01-00/queries.json",
         "found": 8,
+        "ranks": [
+            0,
+            8
+        ],
         "score": 0,
         "total": 14
     }
