@@ -12,6 +12,7 @@ export default {
   computed: {
     items() {
       const length = this.routes.length
+      if (this.$route.name == 'home') return [ROOT]
       return [ROOT].concat(this.routes.map((route, i) => this.item(route, i + 1 == length)))
     },
     routes() {
