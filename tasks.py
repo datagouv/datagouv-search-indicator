@@ -23,7 +23,6 @@ import httpx
 import json
 import os
 import sys
-import logging
 import warnings
 
 from datetime import datetime
@@ -231,8 +230,8 @@ class QueryResult:
 
 
 class Runner:
-    def __init__(self, domain, max_pages=3, scheme='https', timeout=TIMEOUT, concurrency=CONCURRENCY):
-        self.queue = asyncio.Queue()
+    def __init__(self, domain, max_pages=3, scheme='https', timeout=TIMEOUT,
+                 concurrency=CONCURRENCY):
         self.domain = domain
         self.scheme = scheme
         self.api = API(domain, scheme, timeout)
@@ -267,16 +266,7 @@ class Runner:
 
         results = await bar.wait()
 
-        data = {
-            'total': len(results),
-            'found': count_found(results),
-            'avg_rank': average_rank(results),
-            'below': below(results),
-            'score': score(results),
-            'queries': results,
-            'date': self.now.isoformat(timespec='seconds'),
-            'server': '{scheme}://{domain}'.format(**self.__dict__)
-        }
+        data = compile_results('{scheme}://{domain}'.format(**self.__dict__), self.now, results)
 
         outfile = self.root / 'queries.json'
         with outfile.open('w', encoding='utf-8') as jsonfile:
@@ -298,8 +288,14 @@ class Runner:
 
     async def process_query(self, query, expected):
         async with self.limiter:
-            result = await self.rank_query(query, expected)
-            dataset = await self.get_dataset(expected)
+            try:
+                dataset = await self.get_dataset(expected)
+            except httpx.exceptions.HttpError as e:
+                dataset = {'title': 'Dataset({0}) not found'.format(expected)}
+                result = QueryResult(error='Unable to fetch dataset: {0}'.format(e),
+                                     found=False)
+            else:
+                result = await self.rank_query(query, expected)
 
         return {
             'query': query,
@@ -353,8 +349,31 @@ def average_rank(results):
     return sum(ranks) / float(len(ranks))
 
 
+def ranks(results):
+    ranks = [r['rank'] if r['found'] else 0 for r in results]
+    out = [0] * (max(ranks) + 1)
+    for result in results:
+        if result['found']:
+            out[result['rank']] += 1
+    return out
+
+
 def score(results):
     return 0
+
+
+def compile_results(server, timestamp, results):
+    return {
+        'total': len(results),
+        'found': count_found(results),
+        'avg_rank': average_rank(results),
+        'below': below(results),
+        'ranks': ranks(results),
+        'score': score(results),
+        'queries': results,
+        'date': timestamp.isoformat(timespec='seconds'),
+        'server': server
+    }
 
 
 @task
@@ -375,6 +394,7 @@ def toc(ctx, domain=DEFAULT_DOMAIN):
             'total': data['total'],
             'found': data['found'],
             'below': data['below'] if 'below' in data else 0,
+            'ranks': data['ranks'],
             'avg_rank': data['avg_rank'],
             'score': data['score'],
         })
@@ -383,6 +403,26 @@ def toc(ctx, domain=DEFAULT_DOMAIN):
         json.dump(toc, jsonfile, sort_keys=True, indent=4, ensure_ascii=False)
 
     success('TOC built for {0}'.format(domain))
+
+
+@task
+def fix(ctx, domain=DEFAULT_DOMAIN):
+    '''Rebuild queries and tocs on model changes (if possible)'''
+    header('Fixing metadata')
+    for filename in glob('data/{0}/*/queries.json'.format(domain)):
+        info('Fixing {0}', filename)
+        # dirname = os.path.dirname(filename.replace(base_path + '/', ''))
+        with open(filename, encoding='utf-8') as jsonfile:
+            data = json.load(jsonfile)
+
+        server = data['server']
+        timestamp = datetime.strptime(data['date'], '%Y-%m-%dT%H:%M:%S')
+        fixed = compile_results(server, timestamp, data['queries'])
+
+        with open(filename, 'w', encoding='utf-8') as jsonfile:
+            json.dump(fixed, jsonfile, ensure_ascii=False)
+        success('Fixed  {0}', filename)
+    toc(ctx, domain)
 
 
 @task
