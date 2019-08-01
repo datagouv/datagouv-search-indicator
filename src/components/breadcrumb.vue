@@ -3,11 +3,16 @@
 </template>
 
 <script>
+import { icon } from '@fortawesome/fontawesome-svg-core'
+import { faHome } from '@fortawesome/free-solid-svg-icons'
+
+const ROOT = {text: 'Accueil', html: icon(faHome).html[0], to: {name: 'home'}}
+
 export default {
   computed: {
     items() {
       const length = this.routes.length
-      return this.routes.map((route, i) => this.item(route, i + 1 == length))
+      return [ROOT].concat(this.routes.map((route, i) => this.item(route, i + 1 == length)))
     },
     routes() {
       return this.$route.matched.filter(r => r.meta.breadcrumb)
