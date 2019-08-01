@@ -290,7 +290,7 @@ class Runner:
             try:
                 dataset = await self.get_dataset(expected)
             except httpx.exceptions.HttpError as e:
-                dataset = {'title': 'Dataset({0}) not found'.format(expected)}
+                dataset = {'title': 'Dataset({0}) does not exists'.format(expected)}
                 result = QueryResult(error='Unable to fetch dataset: {0}'.format(e),
                                      found=False)
             else:
@@ -305,6 +305,7 @@ class Runner:
             'rank': result.rank,
             'page': result.page,
             'datasets': result.datasets,
+            'error': result.error,
         }
 
     async def rank_query(self, query, expected):
@@ -339,6 +340,10 @@ def count_found(results):
     return sum(1 for r in results if r and r['found'])
 
 
+def count_errors(results):
+    return sum(1 for r in results if r and r.get('error'))
+
+
 def average_rank(results):
     ranks = [r['rank'] for r in results if r and r['found']]
     return sum(ranks) / float(len(ranks))
@@ -363,6 +368,7 @@ def compile_results(server, timestamp, results):
         'found': count_found(results),
         'avg_rank': average_rank(results),
         'ranks': ranks(results),
+        'errors': count_errors(results),
         'score': score(results),
         'queries': results,
         'date': timestamp.isoformat(timespec='seconds'),
