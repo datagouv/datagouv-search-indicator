@@ -10,6 +10,14 @@
     <span v-if="data.item.found">{{ data.item.rank }}</span>
     <font-awesome-icon v-else icon="times" />
   </template>
+  <template slot="page" slot-scope="data">
+    <span v-if="!data.item.error">{{ data.item.page }}</span>
+    <font-awesome-icon v-else icon="times" />
+  </template>
+  <template slot="total" slot-scope="data">
+    <span v-if="!data.item.error">{{ data.item.total }}</span>
+    <font-awesome-icon v-else icon="times" />
+  </template>
 </b-table>
 </template>
 
@@ -31,7 +39,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['toc', 'domain', 'details']),
+    ...mapState(['toc', 'domain', 'details', 'config']),
   },
   methods: {
     display(item) {
@@ -49,7 +57,7 @@ export default {
       if (!query.found) {
         classes.push('table-danger')
       } else {
-        classes.push(query.rank > 3 ? 'table-warning': 'table-success')
+        classes.push(query.rank > this.config.minRank ? 'table-warning': 'table-success')
       }
       return classes
     }

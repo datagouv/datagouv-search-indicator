@@ -12,18 +12,27 @@
       </b-input-group>
     </b-col>
   </b-row>
+  <b-row align-h="center" class="mb-3" v-if="query.error">
+    <b-col cols="12">
+      <b-alert variant="danger" show>
+        <h4 class="alert-heading">Error during query processing</h4>
+        {{ query.error }}
+      </b-alert>
+    </b-col>
+  </b-row>
   <b-row align-h="center" class="mb-3">
     <b-col cols="12" md="10" lg="8">
       <o-embed :url="datasetUrl(query.expected)"></o-embed>
     </b-col>
   </b-row>
-  <b-table striped outlined hover caption-top fixed class="result-table"
+  <b-table striped outlined hover caption-top fixed show-empty class="result-table"
       :items="items" :fields="fields" @row-clicked="toggle"
+      empty-text="Aucun résultat"
       tbody-tr-class="clickable">
     <template slot="table-caption" v-if="query.found">
       Jeu de données trouvé parmi {{ query.total }} resultats
     </template>
-    <template slot="table-caption" v-if="!query.found">
+    <template slot="table-caption" v-if="!query.found && query.total">
       Jeu de données non trouvé parmi {{ query.total }} resultats
     </template>
     <template slot="expected" slot-scope="data">
