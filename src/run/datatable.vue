@@ -1,9 +1,13 @@
 <template>
  <b-table striped outlined hover
-    :items="items" :fields="fields" @row-clicked="display"
-    tbody-tr-class="clickable">
+    :items="details.queries" :fields="fields" @row-clicked="display"
+    :tbody-tr-class="rowClass">
   <template slot="found" slot-scope="data">
     <font-awesome-icon v-if="data.item.found" icon="check" />
+    <font-awesome-icon v-else icon="times" />
+  </template>
+  <template slot="rank" slot-scope="data">
+    <span v-if="data.item.found">{{ data.item.rank }}</span>
     <font-awesome-icon v-else icon="times" />
   </template>
 </b-table>
@@ -20,23 +24,14 @@ export default {
         { label: 'Query', key: 'query', sortable: true },
         { label: 'Expected', key: 'title', sortable: true },
         { label: 'Found', key: 'found', sortable: true, class: 'text-center f85'},
-        { label: 'Rank', key: 'rank', sortable: true, class: 'text-right f85' },
-        { label: 'Page', key: 'page', sortable: true, class: 'text-right f85' },
-        { label: 'Total', key: 'total', sortable: true, class: 'text-right f85' },
+        { label: 'Rank', key: 'rank', sortable: true, class: 'text-center f85' },
+        { label: 'Page', key: 'page', sortable: true, class: 'text-center f85' },
+        { label: 'Total', key: 'total', sortable: true, class: 'text-center f85' },
       ],
     }
   },
   computed: {
     ...mapState(['toc', 'domain', 'details']),
-    items() {
-        return this.details.queries.map(query => {
-            query._cellVariants = {
-                rank: this.rankClass(query.rank),
-                found: query.found ? 'success' : 'danger'
-            }
-            return query
-      })
-    }
   },
   methods: {
     display(item) {
@@ -49,17 +44,14 @@ export default {
         }
       })
     },
-    rankClass(rank){
-
-        var cl = ''
-
-        if (rank > 0 && rank <= 3) {
-            cl = 'success'
-        } else if (rank) {
-            cl = 'warning'
-        }
-
-        return cl
+    rowClass(query, type) {
+      const classes = ['clickable']
+      if (!query.found) {
+        classes.push('table-danger')
+      } else {
+        classes.push(query.rank > 3 ? 'table-warning': 'table-success')
+      }
+      return classes
     }
   }
 }
