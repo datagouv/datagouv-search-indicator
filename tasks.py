@@ -36,7 +36,6 @@ BASE_URL = 'https://www.data.gouv.fr/api/1/'
 PAGE_SIZE = 20
 TIMEOUT = 10
 CONCURRENCY = 20
-EXPECTED_RANK = 3
 
 
 def color(code):
@@ -340,10 +339,6 @@ def count_found(results):
     return sum(1 for r in results if r and r['found'])
 
 
-def below(results):
-    return len([1 for r in results if r and r['found'] and r['rank'] >= EXPECTED_RANK])
-
-
 def average_rank(results):
     ranks = [r['rank'] for r in results if r and r['found']]
     return sum(ranks) / float(len(ranks))
@@ -367,7 +362,6 @@ def compile_results(server, timestamp, results):
         'total': len(results),
         'found': count_found(results),
         'avg_rank': average_rank(results),
-        'below': below(results),
         'ranks': ranks(results),
         'score': score(results),
         'queries': results,
