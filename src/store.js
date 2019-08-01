@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { format } from 'date-fns'
 
 Vue.use(Vuex)
 
@@ -23,16 +24,10 @@ const state = {
 }
 
 const getters = {
-  currentDate: state => state.run ? new Date(state.run.date).toLocaleDateString() : undefined,
+  currentDate: state => state.run ? format(new Date(state.run.date), 'DD/MM/YYYY HH:mm') : undefined,
   currentQuery: state => state.query ? state.query.query : undefined,
   getDataset: state => id => state.datasets.find(row => row.id == id),
   oembedApi: state => state.details ? `${state.details.server}/api/1/oembed` : undefined,
-  // oembedUrls: state => [
-  //     `${state.domain}/datasets/*/`,
-  //     `${state.domain}/*/datasets/*/`,
-  //     `${state.domain}/reuses/*/`,
-  //     `${state.domain}/*/reuses/*/`,
-  // ],
 };
 
 const mutations = {
