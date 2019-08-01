@@ -293,6 +293,10 @@ class Runner:
                 dataset = {'title': 'Dataset({0}) injoignable'.format(expected)}
                 result = QueryResult(error='Impossible de récupérer le jeu de données:\n{0}'.format(e),
                                      found=False)
+            except Exception as e:
+                dataset = {'title': 'Dataset({0}) injoignable'.format(expected)}
+                result = QueryResult(error='Erreur inconnue:\n{0}'.format(e),
+                                     found=False)
             else:
                 result = await self.rank_query(query, expected)
 
