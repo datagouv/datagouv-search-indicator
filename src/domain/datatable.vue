@@ -7,8 +7,8 @@
   </template>
   <template slot="coverage" slot-scope="data">
     <b-progress :max="data.item.total" show-value>
-      <b-progress-bar :value="data.item.found - data.item.below" variant="success"></b-progress-bar>
-      <b-progress-bar :value="data.item.below" variant="warning"></b-progress-bar>
+      <b-progress-bar :value="data.item.found - below(data.item)" variant="success"></b-progress-bar>
+      <b-progress-bar :value="below(data.item)" variant="warning"></b-progress-bar>
       <b-progress-bar :value="data.item.total - data.item.found" variant="danger"></b-progress-bar>
     </b-progress>
   </template>
@@ -31,11 +31,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['toc', 'domain'])
+    ...mapState(['toc', 'domain', 'config'])
   },
   methods: {
     display(item) {
       this.$router.push({name: 'run', params: {domain: this.domain, date: item.date}})
+    },
+    below(item) {
+      return item.ranks.slice(this.config.minRank + 1).reduce((total, count) => total + count, 0)
     }
   }
 }

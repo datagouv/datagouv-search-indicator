@@ -1,5 +1,6 @@
 {
   "title": "Indicateurs de recherche",
+  "minRank": 3,
   "domains": [
     "www.data.gouv.fr",
     "next.data.gouv.fr",
