@@ -23,6 +23,7 @@ import httpx
 import json
 import os
 import sys
+import uuid
 import warnings
 
 from datetime import datetime
@@ -230,8 +231,10 @@ class QueryResult:
     page = None
     page_size = PAGE_SIZE
     error = None
+    uid = None
 
     def __init__(self, **kwargs):
+        self.uid = str(uuid.uuid4())
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -319,6 +322,7 @@ class Runner:
                 result = await self.rank_query(query, params, expected)
 
         return {
+            'uid': result.uid,
             'query': query,
             'params': params,
             'expected': expected,

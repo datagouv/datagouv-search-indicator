@@ -54,7 +54,7 @@ export default {
         params: {
           domain: this.domain,
           date: this.details.date,
-          query: item.query
+          query: item.uid
         }
       })
     },

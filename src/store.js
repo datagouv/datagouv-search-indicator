@@ -106,9 +106,9 @@ const actions = {
             console.error(error)
         }
     },
-    async setQuery({ commit, state }, query) {
+    async setQuery({ commit, state }, uid) {
         try {
-            const q = state.details.queries.find(row => row.query == query)
+            const q = state.details.queries.find(row => row.uid == uid )
             commit('query', q)
             commit('dataset', undefined);
         } catch (error) {
