@@ -397,7 +397,6 @@ def toc(ctx, domain=DEFAULT_DOMAIN):
             'date': data['date'],
             'total': data['total'],
             'found': data['found'],
-            'below': data['below'] if 'below' in data else 0,
             'ranks': data['ranks'],
             'avg_rank': data['avg_rank'],
             'score': data['score'],
