@@ -216,7 +216,7 @@ class OrganizationAPI(DomainAPI):
 
 class QueryResult:
     found = False
-    datasets = []
+    items = []
     rank = None
     total = 0
     page = None
@@ -321,7 +321,7 @@ class Runner:
             if 'data' not in result:
                 return QueryResult(error='Mauvais format de réponse:\n{}'.format(result),
                                    page=page,
-                                   datasets=datasets)
+                                   items=datasets)
             for rank, dataset in enumerate(result['data'], rank + 1):
                 dataset = await self.get_dataset(dataset['id'])
                 datasets.append({'id': dataset['id'], 'title': dataset['title']})
@@ -330,12 +330,12 @@ class Runner:
                                        rank=rank,
                                        page=page,
                                        page_size=result['page_size'],
-                                       datasets=datasets,
+                                       items=datasets,
                                        total=result['total'])
             if not result.get('next_page'):
                 return QueryResult(page=page,
                                    page_size=result['page_size'],
-                                   datasets=datasets,
+                                   items=datasets,
                                    total=result['total'])
             page += 1
 

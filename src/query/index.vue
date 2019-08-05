@@ -59,9 +59,9 @@ export default {
   computed: {
     ...mapState(['query', 'details']),
     items() {
-      return this.query.datasets.map(dataset => {
-        dataset._showDetails = this.toggled === dataset.id
-        return dataset
+      return this.query.items.map(item => {
+        item._showDetails = this.toggled === item.id
+        return item
       })
     }
   },
