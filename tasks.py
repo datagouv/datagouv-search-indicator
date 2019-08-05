@@ -178,10 +178,6 @@ class API:
         self.timeout = timeout
         self.http = httpx.AsyncClient()
 
-        # Domains
-        self.dataset = DatasetAPI(self)
-        self.org = OrganizationAPI(self)
-
     def url_for(self, path, **params):
         qs = urlencode(params, doseq=True)
         if qs:
@@ -194,33 +190,6 @@ class API:
         result = await self.http.get(url, timeout=timeout, **kwargs)
         result.raise_for_status()
         return result.json()
-
-
-class DomainAPI:
-    def __init__(self, api):
-        self.api = api
-
-
-class DatasetAPI(DomainAPI):
-    async def get(self, id):
-        return await self.api.get('datasets/{0}/'.format(id))
-
-    async def search(self, query, params, page=1):
-        params = {'page': page, 'page_size': PAGE_SIZE, **params}
-        if query:
-            params['q'] = query
-        return await self.api.get('datasets/', params=params)
-
-
-class OrganizationAPI(DomainAPI):
-    async def get(self, id):
-        return await self.api.get('organizations/{0}/'.format(id))
-
-    async def search(self, query, params, page=1):
-        params = {'page': page, 'page_size': PAGE_SIZE, **params}
-        if query:
-            params['q'] = query
-        return await self.api.get('organizations/', params=params)
 
 
 class QueryResult:
@@ -256,9 +225,8 @@ class Runner:
         self.api = API(domain, scheme, timeout)
         self.max_pages = max_pages
         self.now = datetime.now()
-
-        # Manage concurrency with an async Semaphore
-        self.limiter = asyncio.Semaphore(concurrency)
+        self.concurrency = concurrency
+        self.runners = [DatasetRunner(self), OrgRunner(self)]
 
     @property
     def timestamp(self):
@@ -268,22 +236,14 @@ class Runner:
     def root(self):
         return Path('data') / self.domain / self.timestamp
 
-    @property
-    def datasets(self):
-        return self.root / 'datasets'
-
     async def process(self):
         self.root.mkdir(parents=True, exist_ok=True)
-        self.datasets.mkdir(parents=True, exist_ok=True)
 
-        with open('data/datasets.csv', newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile)
-            bar = CompoundBar('Querying')
-            for row in reader:
-                bar.add_task(row_label(row),
-                             self.process_query(row['query'], row['params'], row['expected']))
+        results = []
 
-        results = await bar.wait()
+        for runner in self.runners:
+            # info('Querying {0}', runner.basename)
+            results.extend(await runner.process())
 
         data = compile_results('{scheme}://{domain}'.format(**self.__dict__), self.now, results)
 
@@ -293,30 +253,61 @@ class Runner:
 
         return results
 
-    async def get_dataset(self, id):
-        dataset_file = self.datasets / '{0}.json'.format(id)
-        if dataset_file.exists():
-            with dataset_file.open(encoding='utf-8') as jsonfile:
-                dataset = json.load(jsonfile)
-        else:
-            dataset = await self.api.dataset.get(id)
-            with dataset_file.open('w', encoding='utf-8') as jsonfile:
-                json.dump(dataset, jsonfile, ensure_ascii=False)
 
-        return dataset
+class ModelRunnner:
+    model = None
+    basename = None
+    api_class = None
+
+    def __init__(self, runner):
+        self.runner = runner
+        # Manage concurrency with an async Semaphore
+        self.limiter = asyncio.Semaphore(runner.concurrency)
+
+    @property
+    def api(self):
+        return self.runner.api
+
+    @property
+    def files(self):
+        return self.runner.root / self.basename
+
+    async def process(self):
+        self.files.mkdir(parents=True, exist_ok=True)
+
+        with open(f'data/{self.basename}.csv', newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            bar = CompoundBar(f'Querying {self.basename}')
+            for row in reader:
+                bar.add_task(row_label(row),
+                             self.process_query(row['query'], row['params'], row['expected']))
+
+        return await bar.wait()
+
+    async def get_item(self, id):
+        item_file = self.files / f'{id}.json'
+        if item_file.exists():
+            with item_file.open(encoding='utf-8') as jsonfile:
+                item = json.load(jsonfile)
+        else:
+            item = await self.get(id)
+            with item_file.open('w', encoding='utf-8') as jsonfile:
+                json.dump(item, jsonfile, ensure_ascii=False)
+
+        return item
 
     async def process_query(self, query, params, expected):
         params = parse_qs(params)
         async with self.limiter:
             try:
-                dataset = await self.get_dataset(expected)
+                item = await self.get_item(expected)
             except httpx.exceptions.HttpError as e:
-                dataset = {'title': 'Dataset({0}) injoignable'.format(expected)}
-                result = QueryResult(error='Impossible de récupérer le jeu de données:\n{0}'.format(e),
+                item = {'title': f'{self.model}({expected}) injoignable'}
+                result = QueryResult(error=f'Impossible de récupérer {self.model}:\n{e}',
                                      found=False)
             except Exception as e:
-                dataset = {'title': 'Dataset({0}) injoignable'.format(expected)}
-                result = QueryResult(error='Erreur inconnue:\n{0}'.format(e),
+                item = {'title': f'{self.model}({expected}) injoignable'}
+                result = QueryResult(error=f'Erreur inconnue:\n{e}',
                                      found=False)
             else:
                 result = await self.rank_query(query, params, expected)
@@ -326,7 +317,8 @@ class Runner:
             'query': query,
             'params': params,
             'expected': expected,
-            'title': dataset['title'],
+            'model': self.model,
+            'title': item.get('title', item.get('name')),
             'found': result.found,
             'total': result.total,
             'rank': result.rank,
@@ -336,31 +328,65 @@ class Runner:
         }
 
     async def rank_query(self, query, params, expected):
-        datasets = []
+        items = []
         page = 1
         rank = 0
-        while page <= self.max_pages:
-            result = await self.api.dataset.search(query, params, page=page)
+        while page <= self.runner.max_pages:
+            result = await self.search(query, params, page=page)
             if 'data' not in result:
-                return QueryResult(error='Mauvais format de réponse:\n{}'.format(result),
+                return QueryResult(error=f'Mauvais format de réponse:\n{result}',
                                    page=page,
-                                   items=datasets)
-            for rank, dataset in enumerate(result['data'], rank + 1):
-                dataset = await self.get_dataset(dataset['id'])
-                datasets.append({'id': dataset['id'], 'title': dataset['title']})
-                if dataset['id'] == expected:
+                                   items=items)
+            for rank, item in enumerate(result['data'], rank + 1):
+                item = await self.get_item(item['id'])
+                items.append({'id': item['id'], 'title': item.get('title', item.get('name'))})
+                if item['id'] == expected:
                     return QueryResult(found=True,
                                        rank=rank,
                                        page=page,
                                        page_size=result['page_size'],
-                                       items=datasets,
+                                       items=items,
                                        total=result['total'])
             if not result.get('next_page'):
                 return QueryResult(page=page,
                                    page_size=result['page_size'],
-                                   items=datasets,
+                                   items=items,
                                    total=result['total'])
             page += 1
+
+    async def get(self, id):
+        raise NotImplementedError()
+
+    async def search(self, query, params, page=1):
+        raise NotImplementedError()
+
+
+class DatasetRunner(ModelRunnner):
+    model = 'Dataset'
+    basename = 'datasets'
+
+    async def get(self, id):
+        return await self.api.get('datasets/{0}/'.format(id))
+
+    async def search(self, query, params, page=1):
+        params = {'page': page, 'page_size': PAGE_SIZE, **params}
+        if query:
+            params['q'] = query
+        return await self.api.get('datasets/', params=params)
+
+
+class OrgRunner(ModelRunnner):
+    model = 'Organization'
+    basename = 'organizations'
+
+    async def get(self, id):
+        return await self.api.get('organizations/{0}/'.format(id))
+
+    async def search(self, query, params, page=1):
+        params = {'page': page, 'page_size': PAGE_SIZE, **params}
+        if query:
+            params['q'] = query
+        return await self.api.get('organizations/', params=params)
 
 
 def count_found(results):
