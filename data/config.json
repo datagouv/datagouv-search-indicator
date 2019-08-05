@@ -4,7 +4,6 @@
   "domains": [
     "www.data.gouv.fr",
     "next.data.gouv.fr",
-    "demo.data.gouv.fr",
-    "data.xps"
+    "demo.data.gouv.fr"
   ]
 }
