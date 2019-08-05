@@ -311,7 +311,7 @@ class Runner:
             'total': result.total,
             'rank': result.rank,
             'page': result.page,
-            'datasets': result.datasets,
+            'items': result.items,
             'error': result.error,
         }
 
