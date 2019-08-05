@@ -30,6 +30,7 @@ from glob import glob
 from invoke import task
 from pathlib import Path
 from progress.bar import ChargingBar
+from urllib.parse import parse_qs
 
 DEFAULT_DOMAIN = 'www.data.gouv.fr'
 BASE_URL = 'https://www.data.gouv.fr/api/1/'
@@ -286,6 +287,7 @@ class Runner:
         return dataset
 
     async def process_query(self, query, params, expected):
+        params = parse_qs(params)
         async with self.limiter:
             try:
                 dataset = await self.get_dataset(expected)
@@ -298,10 +300,11 @@ class Runner:
                 result = QueryResult(error='Erreur inconnue:\n{0}'.format(e),
                                      found=False)
             else:
-                result = await self.rank_query(query, expected)
+                result = await self.rank_query(query, params, expected)
 
         return {
             'query': query,
+            'params': params,
             'expected': expected,
             'title': dataset['title'],
             'found': result.found,
@@ -312,7 +315,7 @@ class Runner:
             'error': result.error,
         }
 
-    async def rank_query(self, query, expected):
+    async def rank_query(self, query, params, expected):
         datasets = []
         page = 1
         rank = 0
