@@ -19,14 +19,19 @@
 import {format, parse} from 'date-fns'
 import {mapState} from 'vuex'
 
+function formatFloat(value) {
+  if (!value) return
+  return value.toFixed(2)
+}
+
 export default {
   data() {
     return {
       fields: [
         { label: 'Date', key: 'date' },
-        { label: 'Queries', key: 'total' },
+        { label: 'Queries', key: 'total', class: 'text-center' },
         { label: 'Coverage', key: 'coverage'},
-        { label: 'Average rank', key: 'avg_rank' },
+        { label: 'Average rank', key: 'avg_rank', class: 'text-center', formatter: f => f.toFixed(2) },
       ],
     }
   },
@@ -40,6 +45,7 @@ export default {
     below(item) {
       return item.ranks.slice(this.config.minRank + 1).reduce((total, count) => total + count, 0)
     }
+
   }
 }
 </script>
