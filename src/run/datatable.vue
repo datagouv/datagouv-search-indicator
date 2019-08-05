@@ -2,6 +2,10 @@
  <b-table striped outlined hover
     :items="details.queries" :fields="fields" @row-clicked="display"
     :tbody-tr-class="rowClass">
+  <template slot="query" slot-scope="data">
+    {{ data.item.query }}
+    <params-list :params="data.item.params"></params-list>
+  </template>
   <template slot="found" slot-scope="data">
     <font-awesome-icon v-if="data.item.found" icon="check" />
     <font-awesome-icon v-else icon="times" />
@@ -23,9 +27,11 @@
 
 <script>
 import {mapState} from 'vuex'
+import ParamsList from '../query/param-list.vue'
 
 export default {
   name: 'run-datatable',
+  components: {ParamsList},
   data() {
     return {
       fields: [

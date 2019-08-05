@@ -14,10 +14,18 @@ import store from './store'
 import {mapGetters, mapActions} from 'vuex'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheck, faSearch, faSpinner, faStar, faTimes } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck, faSearch, faSpinner, faStar, faTimes, faTag, faCopyright, faBookmark,
+  faCalendar, faMapMarker, faBullseye, faFile, faFileAlt, faRecycle, faEye,
+} from '@fortawesome/free-solid-svg-icons'
+import { faBuilding as farBuilding, faFile as farFile } from '@fortawesome/free-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
-library.add(faCheck, faSearch, faSpinner, faStar, faTimes)
+library.add(
+  faCheck, faSearch, faSpinner, faStar, faTimes, faTag, faCopyright, faBookmark,
+  faCalendar, faMapMarker, faBullseye, faFile, faFileAlt, faRecycle, faEye,
+  farBuilding, farFile
+)
 
 
 Vue.config.devtools = true

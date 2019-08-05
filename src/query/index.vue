@@ -1,8 +1,8 @@
 <template>
-<div>
+<div class="query-results-view">
   <b-row>
     <b-col cols="12">
-      <b-input-group class="mb-3">
+      <b-input-group>
         <b-input-group-prepend>
           <b-btn disabled variant="outline-primary">
             <font-awesome-icon icon="search" />
@@ -10,6 +10,10 @@
         </b-input-group-prepend>
         <b-form-input :value="query.query" />
       </b-input-group>
+      <div class="param-list">
+        <params-list :params="query.params"></params-list>
+      </div>
+      <div class="mb-3"></div>
     </b-col>
   </b-row>
   <b-row align-h="center" class="mb-3" v-if="query.error">
@@ -53,9 +57,10 @@
 import { mapState } from "vuex"
 import OEmbed from '../components/oembed.vue'
 import DatasetDetails from './dataset-details.vue'
+import ParamsList from './param-list.vue'
 
 export default {
-  components: {OEmbed, DatasetDetails},
+  components: {OEmbed, DatasetDetails, ParamsList},
   computed: {
     ...mapState(['query', 'details']),
     items() {
@@ -63,7 +68,7 @@ export default {
         item._showDetails = this.toggled === item.id
         return item
       })
-    }
+    },
   },
   data() {
     return {
@@ -89,14 +94,18 @@ export default {
 </script>
 
 <style>
-table.table caption {
+.query-results-view table.table caption {
   text-align: center;
   font-weight: bold;
   border: 1px solid lightgray;
   border-bottom: none;
 }
 
-.result-table thead {
+.query-results-view .result-table thead {
   display: none;
+}
+
+.query-results-view .param-list {
+  padding-left: 45px;
 }
 </style>
