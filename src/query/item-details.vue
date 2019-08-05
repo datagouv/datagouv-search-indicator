@@ -1,10 +1,11 @@
 <template>
-<b-row  v-if="dataset">
-  <b-col cols="12" class="mb-3">
-    <o-embed :url="dataset.page"></o-embed>
+<b-row  v-if="item">
+  <b-col cols="12" class="mb-3" :class="{'text-center': !model.oembed}">
+    <o-embed v-if="model.oembed" :url="item.page"></o-embed>
+    <a v-else :href="item.page">{{ item.title || item.name }}</a>
   </b-col>
   <b-col cols="12">
-    <tree-view :data="dataset" :options="treeViewOptions"></tree-view>
+    <tree-view :data="item" :options="treeViewOptions"></tree-view>
   </b-col>
 </b-row>
 <b-row v-else>
@@ -22,28 +23,28 @@ import OEmbed from '../components/oembed.vue'
 import TreeView from '../components/treeview.vue'
 
 export default {
-  name: 'dataset-details',
+  name: 'item-details',
   props: {
-    datasetId: String,
+    itemId: String,
   },
   components: {OEmbed, TreeView},
   computed: {
-    ...mapState(['dataset'])
+    ...mapState(['item', 'model'])
   },
   data() {
     return {
-      treeViewOptions: {rootObjectKey: 'dataset', maxDepth: 0}
+      treeViewOptions: {rootObjectKey: 'item', maxDepth: 0}
     }
   },
   created() {
-    if (this.datasetId) this.setDataset(this.datasetId)
+    if (this.itemId) this.setItem(this.itemId)
   },
   methods: {
-    ...mapActions(['setDataset'])
+    ...mapActions(['setItem'])
   },
   watch: {
-    datasetId(id) {
-      this.setDataset(id)
+    itemId(id) {
+      this.setItem(id)
     }
   }
 }

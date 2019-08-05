@@ -1,5 +1,5 @@
 <template>
-<div class="query-results-view">
+<div>
   <b-row>
     <b-col cols="12">
       <b-input-group>
@@ -24,9 +24,9 @@
       </b-alert>
     </b-col>
   </b-row>
-  <b-row align-h="center" class="mb-3">
+  <b-row v-if="model.oembed" align-h="center" class="mb-3">
     <b-col cols="12" md="10" lg="8">
-      <o-embed :url="datasetUrl(query.expected)"></o-embed>
+      <o-embed :url="urlFor(query.expected)"></o-embed>
     </b-col>
   </b-row>
   <b-table striped outlined hover caption-top fixed show-empty class="result-table"
@@ -34,10 +34,10 @@
       empty-text="Aucun résultat"
       tbody-tr-class="clickable">
     <template slot="table-caption" v-if="query.found">
-      Jeu de données trouvé parmi {{ query.total }} resultats
+      {{ model.singular }} trouvé<span v-if="model.feminine">e</span> parmi {{ query.total }} resultats
     </template>
     <template slot="table-caption" v-if="!query.found && query.total">
-      Jeu de données non trouvé parmi {{ query.total }} resultats
+      {{ model.singular }} non trouvé<span v-if="model.feminine">e</span> parmi {{ query.total }} resultats
     </template>
     <template slot="expected" slot-scope="data">
       <font-awesome-icon v-if="data.item.id === query.expected"
@@ -47,7 +47,7 @@
       {{ data.index + 1 }}
     </template>
     <template slot="row-details" slot-scope="row">
-      <dataset-details :dataset-id="row.item.id"></dataset-details>
+      <item-details :item-id="row.item.id"></item-details>
     </template>
   </b-table>
 </div>
@@ -56,13 +56,13 @@
 <script>
 import { mapState } from "vuex"
 import OEmbed from '../components/oembed.vue'
-import DatasetDetails from './dataset-details.vue'
+import ItemDetails from './item-details.vue'
 import ParamsList from './param-list.vue'
 
 export default {
-  components: {OEmbed, DatasetDetails, ParamsList},
+  components: {OEmbed, ItemDetails, ParamsList},
   computed: {
-    ...mapState(['query', 'details']),
+    ...mapState(['query', 'details', 'model']),
     items() {
       return this.query.items.map(item => {
         item._showDetails = this.toggled === item.id
@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       dialog: false,
-      treeViewOptions: {rootObjectKey: 'dataset', maxDepth: 0},
+      treeViewOptions: {rootObjectKey: 'item', maxDepth: 0},
       toggled: undefined,
       fields: [
         { key: 'expected', 'class': 'f50' },
@@ -83,8 +83,8 @@ export default {
     }
   },
   methods: {
-    datasetUrl(id) {
-      return `${this.details.server}/datasets/${id}/`
+    urlFor(id) {
+      return `${this.details.server}/${this.model.path}/${id}/`
     },
     toggle(item, index) {
       this.toggled = this.toggled === item.id ? undefined : item.id
@@ -93,19 +93,19 @@ export default {
 };
 </script>
 
-<style>
-.query-results-view table.table caption {
+<style scoped>
+table.table >>> caption {
   text-align: center;
   font-weight: bold;
   border: 1px solid lightgray;
   border-bottom: none;
 }
 
-.query-results-view .result-table thead {
+.result-table >>> thead {
   display: none;
 }
 
-.query-results-view .param-list {
+>>> .param-list {
   padding-left: 45px;
 }
 </style>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { format } from 'date-fns'
+import models from './models'
 
 Vue.use(Vuex)
 
@@ -18,15 +19,25 @@ const state = {
     toc: undefined,
     run: undefined,
     details: undefined,
+    model: models[0],
     query: undefined,
-    dataset: undefined,
-    datasets: undefined,
+    item: undefined,
+    items: undefined,
 }
 
 const getters = {
   currentDate: state => state.run ? format(new Date(state.run.date), 'DD/MM/YYYY HH:mm') : undefined,
   currentQuery: state => state.query ? state.query.query : undefined,
-  getDataset: state => id => state.datasets.find(row => row.id == id),
+  queries: state => state.details ? state.details.queries.filter(query => query.model == state.model.name): undefined,
+  queryCounter: state => state.details ? state.details.queries.reduce((result, query) => {
+    if (!result.hasOwnProperty(query.model)) {
+      result[query.model] = 1
+    } else {
+      result[query.model]++
+    }
+    return result
+  }, {}) : undefined,
+  getItem: state => id => state.items.find(item => item.id == id),
   oembedApi: state => state.details ? `${state.details.server}/api/1/oembed` : undefined,
 };
 
@@ -49,18 +60,21 @@ const mutations = {
     details(state, value) {
         state.details = value
     },
+    model(state, value) {
+        state.model = value
+    },
     query(state, value) {
         state.query = value
-        state.datasets = []
+        state.items = []
     },
-    dataset(state, value) {
-        state.dataset = value
+    item(state, value) {
+        state.item = value
     },
-    addDataset(state, value) {
-        state.datasets.push(value)
+    addItem(state, value) {
+        state.items.push(value)
     },
-    datasets(state, value) {
-        state.datasets = value
+    items(state, value) {
+        state.items = value
     }
 }
 
@@ -106,35 +120,38 @@ const actions = {
             console.error(error)
         }
     },
+    async setModel({ commit }, model) {
+      commit('model', model)
+    },
     async setQuery({ commit, state }, uid) {
         try {
             const q = state.details.queries.find(row => row.uid == uid )
+            const model = models.find(model => model.name == q.model)
+            commit('model', model)
             commit('query', q)
-            commit('dataset', undefined);
+            commit('item', undefined);
         } catch (error) {
             console.error(error)
         }
     },
-    async getDataset({ commit, getters, state }, id) {
+    async getItem({ commit, getters, state }, id) {
         try {
-            if (!getters.getDataset(id)) {
+            if (!getters.getItem(id)) {
                 commit('loading', true)
-                const dataset = await getData(
-                    `${state.domain}/${
-                        state.run.dirname
-                    }/datasets/${id}.json`
+                const item = await getData(
+                    `${state.domain}/${state.run.dirname}/${state.model.path}/${id}.json`
                 )
-                commit('addDataset', dataset)
+                commit('addItem', item)
                 commit('loading', false)
             }
         } catch (error) {
             console.error(error)
         }
     },
-    async setDataset({ commit, dispatch, getters }, id) {
+    async setItem({ commit, dispatch, getters }, id) {
         try {
-            await dispatch('getDataset', id)
-            commit('dataset', getters.getDataset(id))
+            await dispatch('getItem', id)
+            commit('item', getters.getItem(id))
         } catch (error) {
             console.error(error)
         }
