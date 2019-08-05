@@ -30,7 +30,7 @@ from glob import glob
 from invoke import task
 from pathlib import Path
 from progress.bar import ChargingBar
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlencode
 
 DEFAULT_DOMAIN = 'www.data.gouv.fr'
 BASE_URL = 'https://www.data.gouv.fr/api/1/'
@@ -181,11 +181,14 @@ class API:
         self.dataset = DatasetAPI(self)
         self.org = OrganizationAPI(self)
 
-    def url_for(self, path):
+    def url_for(self, path, **params):
+        qs = urlencode(params, doseq=True)
+        if qs:
+            return f'{self.scheme}://{self.domain}/api/1/{path}?{qs}'
         return f'{self.scheme}://{self.domain}/api/1/{path}'
 
     async def get(self, path, **kwargs):
-        url = self.url_for(path)
+        url = self.url_for(path, **kwargs.pop('params', {}))
         timeout = kwargs.pop('timeout', self.timeout)
         result = await self.http.get(url, timeout=timeout, **kwargs)
         result.raise_for_status()
@@ -201,8 +204,10 @@ class DatasetAPI(DomainAPI):
     async def get(self, id):
         return await self.api.get('datasets/{0}/'.format(id))
 
-    async def search(self, query, page=1):
-        params = {'q': query, 'page': page, 'page_size': PAGE_SIZE}
+    async def search(self, query, params, page=1):
+        params = {'page': page, 'page_size': PAGE_SIZE, **params}
+        if query:
+            params['q'] = query
         return await self.api.get('datasets/', params=params)
 
 
@@ -210,8 +215,10 @@ class OrganizationAPI(DomainAPI):
     async def get(self, id):
         return await self.api.get('organizations/{0}/'.format(id))
 
-    async def search(self, query, page=1):
-        params = {'q': query, 'page': page, 'page_size': PAGE_SIZE}
+    async def search(self, query, params, page=1):
+        params = {'page': page, 'page_size': PAGE_SIZE, **params}
+        if query:
+            params['q'] = query
         return await self.api.get('organizations/', params=params)
 
 
@@ -227,6 +234,15 @@ class QueryResult:
     def __init__(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+
+def row_label(row):
+    if row['query'] and row['params']:
+        return '{query} ({params})'
+    elif row['query']:
+        return row['query']
+    else:
+        return row['params']
 
 
 class Runner:
@@ -261,7 +277,7 @@ class Runner:
             reader = csv.DictReader(csvfile)
             bar = CompoundBar('Querying')
             for row in reader:
-                bar.add_task(row['query'],
+                bar.add_task(row_label(row),
                              self.process_query(row['query'], row['params'], row['expected']))
 
         results = await bar.wait()
@@ -320,7 +336,7 @@ class Runner:
         page = 1
         rank = 0
         while page <= self.max_pages:
-            result = await self.api.dataset.search(query, page=page)
+            result = await self.api.dataset.search(query, params, page=page)
             if 'data' not in result:
                 return QueryResult(error='Mauvais format de réponse:\n{}'.format(result),
                                    page=page,
