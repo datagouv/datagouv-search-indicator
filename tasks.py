@@ -256,12 +256,12 @@ class Runner:
         self.root.mkdir(parents=True, exist_ok=True)
         self.datasets.mkdir(parents=True, exist_ok=True)
 
-        with open('data/queries.csv', newline='', encoding='utf-8') as csvfile:
+        with open('data/datasets.csv', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             bar = CompoundBar('Querying')
             for row in reader:
                 bar.add_task(row['query'],
-                             self.process_query(row['query'], row['expected']))
+                             self.process_query(row['query'], row['params'], row['expected']))
 
         results = await bar.wait()
 
@@ -285,7 +285,7 @@ class Runner:
 
         return dataset
 
-    async def process_query(self, query, expected):
+    async def process_query(self, query, params, expected):
         async with self.limiter:
             try:
                 dataset = await self.get_dataset(expected)
