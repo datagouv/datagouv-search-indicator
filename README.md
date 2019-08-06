@@ -4,6 +4,19 @@
 
 Keep track of udata search results accross time and generate a static site to explore them.
 
+## Contributing queries
+
+Queries are stored in:
+- [`data/datasets.csv`](data/datasets.csv) for Dataset search
+- [`data/organizations.csv`](data/organizations.csv) for Organizations search
+
+These CSVs have the same 3-columns format:
+- `query`: a pure text search query (ie. `q` parameter)
+- `params`: a search querystring (ie. `tag=something&tag=other`)
+- `expected`: the expected model identifier
+
+At least one of `query` and `params` is mandatory. If you have a `q` parameter in `params` and a `query`, the `q` parameter will be overwritten by `query`.
+
 
 ## Running benchmark
 

@@ -2,18 +2,18 @@
 These scripts are meant to build the data for the search result indicator dashboard.
 
 It perform the following tasks:
-- It parce a CSV file to perform search queries on data.gouv.fr,
- rank the expected results on data.gouv.fr
+- It parce a CSV file to perform search queries on a target udata instance,
+- rank the expected results on the target udata instance
+- store the query results details (including items payloads) as JSON files
 
-It makes use of the data.gouv.fr API wich returns the same result as the front end.
+It makes use of the udata API wich returns the same result as the front end.
 
+The expected input format is a CSV file (one by model)
+with the following columns (names matters):
 
-The expectected input file format is the following (column names matters):
-
-| query                                           | expected                |
-|-------------------------------------------------|-------------------------|
-| The search query to submit to the search engine | The expected dataset id |
-
+- `query`: a text only search query to submit to the search engine
+- `params`: a search querystring to submit to the search engine.
+- `expected`: The expected item id
 
 '''
 import asyncio
@@ -34,7 +34,6 @@ from progress.bar import ChargingBar
 from urllib.parse import parse_qs, urlencode
 
 DEFAULT_DOMAIN = 'www.data.gouv.fr'
-BASE_URL = 'https://www.data.gouv.fr/api/1/'
 PAGE_SIZE = 20
 TIMEOUT = 10
 CONCURRENCY = 20
