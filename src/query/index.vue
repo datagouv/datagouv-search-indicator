@@ -24,11 +24,8 @@
       </b-alert>
     </b-col>
   </b-row>
-  <b-row v-if="model.oembed" align-h="center" class="mb-3">
-    <b-col cols="12" md="10" lg="8">
-      <o-embed :url="urlFor(query.expected)"></o-embed>
-    </b-col>
-  </b-row>
+  <item-details :item="expected" collapse></item-details>
+  <div class="mb-3"></div>
   <b-table striped outlined hover caption-top fixed show-empty class="result-table"
       :items="items" :fields="fields" @row-clicked="toggle"
       empty-text="Aucun résultat"
@@ -47,14 +44,14 @@
       {{ data.index + 1 }}
     </template>
     <template slot="row-details" slot-scope="row">
-      <item-details :item-id="row.item.id"></item-details>
+      <item-details :item="item"></item-details>
     </template>
   </b-table>
 </div>
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapActions, mapState } from "vuex"
 import OEmbed from '../components/oembed.vue'
 import ItemDetails from './item-details.vue'
 import ParamsList from './param-list.vue'
@@ -62,7 +59,7 @@ import ParamsList from './param-list.vue'
 export default {
   components: {OEmbed, ItemDetails, ParamsList},
   computed: {
-    ...mapState(['query', 'details', 'model']),
+    ...mapState(['query', 'details', 'model', 'expected', 'item']),
     items() {
       return this.query.items.map(item => {
         item._showDetails = this.toggled === item.id
@@ -89,6 +86,12 @@ export default {
     toggle(item, index) {
       this.toggled = this.toggled === item.id ? undefined : item.id
     },
+    ...mapActions(['setItem'])
+  },
+  watch: {
+    toggled(itemId) {
+      this.setItem(itemId)
+    }
   }
 };
 </script>

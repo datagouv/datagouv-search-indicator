@@ -17,6 +17,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCheck, faSearch, faSpinner, faStar, faTimes, faTag, faCopyright, faBookmark,
   faCalendar, faMapMarker, faBullseye, faFile, faFileAlt, faRecycle, faEye,
+  faArrowDown, faArrowUp, faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { faBuilding as farBuilding, faFile as farFile } from '@fortawesome/free-regular-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
@@ -24,6 +25,7 @@ import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 library.add(
   faCheck, faSearch, faSpinner, faStar, faTimes, faTag, faCopyright, faBookmark,
   faCalendar, faMapMarker, faBullseye, faFile, faFileAlt, faRecycle, faEye,
+  faArrowDown, faArrowUp, faExternalLinkAlt,
   farBuilding, farFile
 )
 

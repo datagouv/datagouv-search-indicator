@@ -23,7 +23,8 @@ const state = {
     query: undefined,
     item: undefined,
     items: undefined,
-}
+    expected: undefined,
+  }
 
 const getters = {
   currentDate: state => state.run ? format(new Date(state.run.date), 'DD/MM/YYYY HH:mm') : undefined,
@@ -75,7 +76,10 @@ const mutations = {
     },
     items(state, value) {
         state.items = value
-    }
+    },
+    expected(state, value) {
+      state.expected = value
+  },
 }
 
 const actions = {
@@ -123,13 +127,14 @@ const actions = {
     async setModel({ commit }, model) {
       commit('model', model)
     },
-    async setQuery({ commit, state }, uid) {
+    async setQuery({ commit, state, dispatch }, uid) {
         try {
             const q = state.details.queries.find(row => row.uid == uid )
             const model = models.find(model => model.name == q.model)
             commit('model', model)
             commit('query', q)
-            commit('item', undefined);
+            commit('item', undefined)
+            dispatch('setExpected', q.expected)
         } catch (error) {
             console.error(error)
         }
@@ -152,6 +157,14 @@ const actions = {
         try {
             await dispatch('getItem', id)
             commit('item', getters.getItem(id))
+        } catch (error) {
+            console.error(error)
+        }
+    },
+    async setExpected({ commit, dispatch, getters }, id) {
+        try {
+            await dispatch('getItem', id)
+            commit('expected', getters.getItem(id))
         } catch (error) {
             console.error(error)
         }
