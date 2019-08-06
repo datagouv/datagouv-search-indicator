@@ -19,19 +19,31 @@
 import {format, parse} from 'date-fns'
 import {mapState} from 'vuex'
 
-function formatFloat(value) {
-  if (!value) return
-  return value.toFixed(2)
-}
-
 export default {
   data() {
     return {
       fields: [
         { label: 'Date', key: 'date' },
         { label: 'Queries', key: 'total', class: 'text-center' },
-        { label: 'Coverage', key: 'coverage'},
-        { label: 'Average rank', key: 'avg_rank', class: 'text-center', formatter: f => f.toFixed(2) },
+        {
+          label: 'Coverage',
+          key: 'coverage',
+          headerTitle: `Values are "top ranked/bad/not found"`,
+        },
+        {
+          label: 'Average rank',
+          headerTitle: 'Only includes matched queries. Lower is better',
+          key: 'avg_rank',
+          class: 'text-center',
+          formatter: f => f.toFixed(2),
+        },
+        {
+          label: 'Score',
+          headerTitle: 'Includes all queries. Lower is better',
+          key: 'score',
+          class: 'text-center',
+          formatter: f => f.toFixed(2)
+        },
       ],
     }
   },

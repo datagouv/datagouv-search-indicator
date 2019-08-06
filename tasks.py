@@ -411,7 +411,7 @@ def ranks(results):
 
 
 def score(results):
-    return 0
+    return (average_rank(results) * count_found(results)) / len(results)
 
 
 def compile_results(server, timestamp, results):
