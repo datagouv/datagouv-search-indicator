@@ -165,6 +165,7 @@ class Spinner:
         except Exception as e:
             self.ok = False
             self.error = (str(e) or str(e.__class__.__name__)).split('\n')[0]
+            self.result = {}
         else:
             self.ok = self.result['found']
         self.done = True
@@ -242,7 +243,6 @@ class Runner:
         results = []
 
         for runner in self.runners:
-            # info('Querying {0}', runner.basename)
             results.extend(await runner.process())
 
         data = compile_results('{scheme}://{domain}'.format(**self.__dict__), self.now, results)
