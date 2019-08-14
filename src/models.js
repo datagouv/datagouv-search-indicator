@@ -11,7 +11,7 @@ export default [
     plural: 'Organisations',
     name: 'Organization',
     path: 'organizations' ,
-    oembed: false,
+    oembed: true,
     feminine: true,
   },
 ]
