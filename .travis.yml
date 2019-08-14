@@ -1,0 +1,15 @@
+language: node_js
+cache:
+  directories:
+  - node_modules
+env:
+  - PATH_PREFIX="/datagouv-search-indicator"
+script:
+  - npm run build
+  - sed -i '/dist\//d' .gitignore
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
