@@ -402,10 +402,10 @@ def average_rank(results):
 
 
 def ranks(results):
-    ranks = [r['rank'] if r['found'] else 0 for r in results]
+    ranks = [r['rank'] if r.get('found') else 0 for r in results]
     out = [0] * (max(ranks) + 1)
     for result in results:
-        if result['found']:
+        if result.get('found'):
             out[result['rank']] += 1
     return out
 
