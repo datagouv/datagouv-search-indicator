@@ -1,0 +1,39 @@
+query,params,expected
+covid,,5ea0369268289dd267a94b1d
+corona,,5ea0369268289dd267a94b1d
+coronavirus,,5ea0369268289dd267a94b1d
+"virus",,5ea0369268289dd267a94b1d
+covid-19,,5ea0369268289dd267a94b1d
+covid19,,5ea0369268289dd267a94b1d
+immobilier,,5cc2dfbe8b4c414c91ffc46d
+prix,,5cc2dfbe8b4c414c91ffc46d
+appartement,,5cc2dfbe8b4c414c91ffc46d
+maison,,5cc2dfbe8b4c414c91ffc46d
+dvf,,5cc2dfbe8b4c414c91ffc46d
+logement,,5cc2dfbe8b4c414c91ffc46d
+cadastre,,61bf7ab31fe699954ebd3fa8
+carte,,61bf7ab31fe699954ebd3fa8
+décès ,,5e0cf0a28b4c41122cc4ca58
+mort,,5e0cf0a28b4c41122cc4ca58
+genealogie,,5e0cf0a28b4c41122cc4ca58
+genealogiste,,5e0cf0a28b4c41122cc4ca58
+insee,,5e0cf0a28b4c41122cc4ca58
+adresse,,61bf7e7fd6b8783beea67b5f
+"ban",,61bf7e7fd6b8783beea67b5f
+base adresse,,61bf7e7fd6b8783beea67b5f
+films,,536cc9eda3a72938e9a8e9ca
+temps de parole des hommes et des femmes à la télévision et à la radio,,5c7d4f66634f4166e4a385f9
+"Siret",,5fbf724d677c5e31fdedea88
+"Siren",,5fbf724d677c5e31fdedea88
+"Entreprise",,5fbf724d677c5e31fdedea88
+rcs,,5fbf724d677c5e31fdedea88
+Sirene,,5fbf724d677c5e31fdedea88
+Rncs,,5fbf724d677c5e31fdedea88
+inpi,,5fbf724d677c5e31fdedea88
+annuaire,,5fbf724d677c5e31fdedea88
+"Alimentation",,5f807a61126830043d881efe
+nourriture,,5f807a61126830043d881efe
+agriculture,,5f807a61126830043d881efe
+agrybalise,,5f807a61126830043d881efe
+RNA,,61bf7fe290108045a8d9464f
+associations,,61bf7fe290108045a8d9464f
