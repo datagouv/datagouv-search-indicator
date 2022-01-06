@@ -14,4 +14,12 @@ export default [
     oembed: true,
     feminine: true,
   },
+  {
+    singular: 'Réutilisation',
+    plural: 'Réutilisations',
+    name: 'Reuse',
+    path: 'reuses' ,
+    oembed: true,
+    feminine: true,
+  },
 ]

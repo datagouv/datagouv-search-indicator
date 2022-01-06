@@ -166,7 +166,7 @@ class Spinner:
             self.error = (str(e) or str(e.__class__.__name__)).split('\n')[0]
             self.result = {}
         else:
-            self.ok = self.result['found']
+            self.ok = self.result.get('found')
         self.done = True
         self.spin()
 
@@ -176,7 +176,7 @@ class API:
         self.domain = domain
         self.scheme = scheme
         self.timeout = timeout
-        self.http = httpx.AsyncClient()
+        self.http = httpx.AsyncClient(http_versions=["HTTP/1.1"])
 
     def url_for(self, path, **params):
         qs = urlencode(params, doseq=True)
@@ -226,7 +226,7 @@ class Runner:
         self.max_pages = max_pages
         self.now = datetime.now()
         self.concurrency = concurrency
-        self.runners = [DatasetRunner(self), OrgRunner(self)]
+        self.runners = [DatasetRunner(self), OrgRunner(self), ReuseRunner(self)]
 
     @property
     def timestamp(self):
@@ -300,7 +300,7 @@ class ModelRunnner:
         async with self.limiter:
             try:
                 item = await self.get_item(expected)
-            except httpx.exceptions.HttpError as e:
+            except httpx.exceptions.HTTPError as e:
                 item = {'title': f'{self.model}({expected}) injoignable'}
                 result = QueryResult(error=f'Impossible de récupérer {self.model}:\n{e}',
                                      found=False)
@@ -388,8 +388,22 @@ class OrgRunner(ModelRunnner):
         return await self.api.get('organizations/', params=params)
 
 
+class ReuseRunner(ModelRunnner):
+    model = 'Reuse'
+    basename = 'reuses'
+
+    async def get(self, id):
+        return await self.api.get('reuses/{0}/'.format(id))
+
+    async def search(self, query, params, page=1):
+        params = {'page': page, 'page_size': PAGE_SIZE, **params}
+        if query:
+            params['q'] = query
+        return await self.api.get('reuses/', params=params)
+
+
 def count_found(results):
-    return sum(1 for r in results if r and r['found'])
+    return sum(1 for r in results if r and r.get('found'))
 
 
 def count_errors(results):
@@ -397,8 +411,8 @@ def count_errors(results):
 
 
 def average_rank(results):
-    ranks = [r['rank'] for r in results if r and r['found']]
-    return sum(ranks) / float(len(ranks))
+    ranks = [r['rank'] for r in results if r and r.get('found')]
+    return sum(ranks) / float(len(ranks)) if ranks else 0
 
 
 def ranks(results):
@@ -444,7 +458,7 @@ def toc(ctx, domain=DEFAULT_DOMAIN):
             'dirname': dirname,
             'date': data['date'],
             'total': data['total'],
-            'found': data['found'],
+            'found': data.get('found'),
             'ranks': data['ranks'],
             'avg_rank': data['avg_rank'],
             'score': data['score'],
