@@ -181,7 +181,7 @@ class API:
     def url_for(self, path, **params):
         qs = urlencode(params, doseq=True)
         if qs:
-            return f'{self.scheme}://{self.domain}/api/1/{path}?{qs}'
+            return f'{self.scheme}://{self.domain}/api/2/{path}search/?{qs}'
         return f'{self.scheme}://{self.domain}/api/1/{path}'
 
     async def get(self, path, **kwargs):
@@ -402,10 +402,10 @@ def average_rank(results):
 
 
 def ranks(results):
-    ranks = [r['rank'] if r['found'] else 0 for r in results]
+    ranks = [r['rank'] if r and r['found'] else 0 for r in results]
     out = [0] * (max(ranks) + 1)
     for result in results:
-        if result['found']:
+        if result and result['found']:
             out[result['rank']] += 1
     return out
 
